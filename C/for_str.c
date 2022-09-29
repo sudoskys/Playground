@@ -3,7 +3,6 @@
 int main(int argc, char *argv[])
 {   // 传入参数个数和参数具体数组
     int i = 0;
-
     // go through each string in argv
     // 跳过第一个程序名
     printf("test:first arg is %s\n",argv[0]);
