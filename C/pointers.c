@@ -1,3 +1,4 @@
+//@指针
 #include <stdio.h>
 // 
 int main(int argc, char *argv[])

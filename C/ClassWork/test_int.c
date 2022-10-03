@@ -1,3 +1,4 @@
+//@int类型测试
 #include <stdio.h>
 #include <ctype.h>
 int main()

@@ -1,3 +1,4 @@
+//@while语句
 #include <stdio.h>
 /*
 在C语言中，实际上没有真正的“布尔”类型

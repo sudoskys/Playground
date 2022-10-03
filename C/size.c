@@ -1,3 +1,4 @@
+//@大小sizeof测试
 #include <stdio.h>
 
 int main(int argc, char *argv[])

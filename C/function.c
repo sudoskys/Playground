@@ -1,3 +1,4 @@
+//@函数
 #include <stdio.h>
 #include <ctype.h>
 

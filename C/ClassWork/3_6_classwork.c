@@ -1,3 +1,4 @@
+//@课程作业3.6
 #include <stdio.h>
 
 void morning() {

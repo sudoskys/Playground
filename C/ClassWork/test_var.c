@@ -1,3 +1,4 @@
+//@变量测试
 #include <stdio.h>
 int x = 10, y = 20;
 int main()

@@ -1,3 +1,4 @@
+//@函数
 #include <stdio.h>
 
 /* This is a comment. */

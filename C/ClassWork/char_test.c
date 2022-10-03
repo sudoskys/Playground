@@ -1,4 +1,4 @@
-//@test
+//@test字符类型
 #include <stdio.h>
 // 测试 char 类型
 int main(int argc, char *argv[])
