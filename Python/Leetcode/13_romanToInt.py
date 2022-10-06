@@ -20,7 +20,6 @@ class Solution(object):
         :type s: str
         :rtype: int
         """
-        # create map
         _sum = 0
         # control
         for key in range(0, len(s) - 1):
