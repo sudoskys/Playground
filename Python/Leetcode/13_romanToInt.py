@@ -24,11 +24,10 @@ class Solution(object):
         # create map
         int_map = list(map(self._map, list(s)))
         sum = 0
-        _len = len(int_map)
         # control
-        for key in range(-1):
+        for key, item in enumerate(int_map):
             _control = +item
-            if len(int_map) != key + 1:
+            if len(int_map) != key+1:
                 if int_map[key] < int_map[key + 1]:
                     _control = -item
             sum += _control
