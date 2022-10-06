@@ -4,7 +4,7 @@
 # @Software: PyCharm
 # @Github    ：sudoskys
 class Solution(object):
-    def _map(self, x):
+    def __init__(self):
         self.RomanMap = {
             "I": 1,
             "V": 5,
@@ -14,7 +14,6 @@ class Solution(object):
             "D": 500,
             "M": 1000,
         }
-        return self.RomanMap[x]
 
     def romanToInt(self, s):
         """
@@ -22,16 +21,17 @@ class Solution(object):
         :rtype: int
         """
         # create map
-        int_map = list(map(self._map, list(s)))
-        sum = 0
+        _sum = 0
         # control
-        for key, item in enumerate(int_map):
-            _control = +item
-            if len(int_map) != key+1:
-                if int_map[key] < int_map[key + 1]:
-                    _control = -item
-            sum += _control
-        return sum
+        for key in range(0, len(s) - 1):
+            _now=self.RomanMap[s[key]]
+            _next=self.RomanMap[s[key + 1]]
+            _control = + _now
+            if _now < _next:
+                _control = -_now
+            _sum += _control
+        _sum += self.RomanMap[s[len(s)-1]]
+        return _sum
 
 
 sr = "IIID"
