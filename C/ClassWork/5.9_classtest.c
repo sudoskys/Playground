@@ -6,7 +6,7 @@ void test1(void){
 	//次方 
 	double x,y,result;
 	scanf("%lf,%lf",&x,&y);
-	result=pow(x,y);
+	result= pow(x,y);
 	printf("%.2lf",result);
 }
 
@@ -37,19 +37,18 @@ void test3(){
 		//printf("run:%d\n",i);
 		index=sizeof(scr)-i-1;
 		item=scr[index];
-		
 		// 开始判定
 		if (item!='0' && haszero==1){
 			haszero=0;
 		}
-		
 		// 开始输出
-		if (haszero=1)
+		if (haszero!=0){
 			printf("");
+			//printf("/%c/",item);
 			//printf("%c",item);
-		else
-			printf("%d",item);
-		
+		}else{
+            printf("%c",item);
+		}
 	}
 }
 
@@ -71,11 +70,12 @@ void test5(){
 	int yuan,jiao,fen;
 	// 位数?
 	scanf("%lf",&money);
-	yuan=(money)/1.0;
-	jiao=(money*10-yuan*1)/100.0;
-	fen=(money*100-yuan*100-jiao*10)/1.0;
+	money*=100;
+	yuan=money/100;
+	jiao=(money-yuan*100)/10;
+	fen=(money-yuan*100-jiao*10)/1;
 	printf("%d元%d角%d分",yuan,jiao,fen);
 }
 int main(){
-	test3();
+	test5();
 }
