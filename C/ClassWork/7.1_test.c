@@ -1,4 +1,4 @@
-//@if
+//@逆序输出
 #include <stdio.h>
 
 int rev_int(int tar){

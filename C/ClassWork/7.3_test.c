@@ -1,5 +1,6 @@
 //@test
 #include <stdio.h>
+
 int test1(void){
     int week_day;
     scanf("%d",&week_day);
@@ -40,7 +41,6 @@ int test2(){
             printf("%d天",_day);
             break;
         }
-
     }
     return 0;
 }
