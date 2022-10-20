@@ -24,8 +24,22 @@
 
 练习15：指针，可怕的指针
 
+## QuickStart
+```
+//@test
+#include <stdio.h>
 
+int main(void)
+{
+    test1();
+    return 0;
+}
 
+int test()
+{
+    return 0;
+}
+```
 
 
 ## Source
