@@ -25,7 +25,9 @@
 练习15：指针，可怕的指针
 
 ## QuickStart
+
 ```
+
 //@test
 #include <stdio.h>
 
@@ -39,6 +41,7 @@ int test()
 {
     return 0;
 }
+
 ```
 
 
