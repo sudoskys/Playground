@@ -51,3 +51,5 @@ int test()
 - [WeakBirdsBook](https://www.runoob.com/cprogramming/c-operators.html)
 
 - [s](https://download.armfly.com/armbbs/bbs/94810/C%20Primer%20Plus(%E7%AC%AC%E5%85%AD%E7%89%88)%E4%B8%AD%E6%96%87%E7%89%88.pdf)
+
+- [paste](https://paste.rs/web)
