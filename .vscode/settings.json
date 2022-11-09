@@ -5,7 +5,8 @@
     "random": "c",
     "string.h": "c",
     "functional": "c",
-    "sstream": "c"
+    "sstream": "c",
+    "valarray": "c"
   },
   "C_Cpp_Runner.cStandard": "",
   "C_Cpp_Runner.cppStandard": "",
