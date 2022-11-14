@@ -1,29 +1,30 @@
 //@test
 #include <stdio.h>
 
-int get_length(int x)
+
+
+/*
+#include<stdio.h>
+int DigitSum(int input)
 {
-	int leng=0;
-	while(x)
+	if (input / 10 == 0)
 	{
-		x/=10;
-		leng++;
+		return input % 10;
 	}
-	return leng;
+	int sum = 0;
+	sum += input % 10;
+	sum += DigitSum(input/10);
+	return sum;
 }
-
-int DigitSum(int n){
-    //单位思考:取首字符并减位数
-    n/(10*get_length(n));
+int main()
+{
+	int input = 0;
+	scanf("%d",&input);
+	int sum = DigitSum(input);
+	printf("%d",sum);
+	return 0;
 }
-
-main(){
-    int result;
-    int input;
-    scanf("%d",&input);
-    result=DigitSum(input);
-    printf("%d",input,result);
-}
+*/
 
 /*
 long age(int n,int ages,int init){
