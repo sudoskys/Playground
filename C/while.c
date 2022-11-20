@@ -14,7 +14,6 @@
 int main2(int argc, char *argv[])
 {
     // go through each string in argv
-
     int i = 0;
     while(i < argc) {
         printf("arg %d: %s\n", i, argv[i]);

@@ -1,6 +1,7 @@
 //@11.5 课堂作业啊
 #include <stdio.h>
 
+// 快速查找
 int test5(){
     int num[16] = {0};
     char ch;int i = 0;
