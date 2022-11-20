@@ -78,7 +78,7 @@ int test3(){
 
 // 数据限定：小于 100
 #include<stdio.h>
-int delete(int pos,int num[],int hash[]){
+int deletes(int pos,int num[],int hash[]){
     for (int i=0;i<pos;i++){
         hash[num[i]]=5;
     }
@@ -86,7 +86,7 @@ int delete(int pos,int num[],int hash[]){
 
 int test15(){
     int pos;
-    printf("输入个数：");
+    printf("输入数字：");
     scanf("%d",&pos);
     int num[pos];
     for (int i=0;i<pos;i++){
@@ -94,7 +94,7 @@ int test15(){
     }
     // 去重
     int hash[20]={0};
-    delete(pos,num,hash);
+    deletes(pos,num,hash);
     for (int i=0;i<20;i++){
         if (hash[i]==5) printf("%d ",i);
     }
@@ -111,7 +111,7 @@ void char_convert(char s[],char t[]){
     }
 }
 
-int main(){
+int test16(){
     char wat[50];
     char t[50];
     gets(wat);
@@ -122,3 +122,44 @@ int main(){
     // 因为题目不能带 \n 所以不用 puts
 }
 
+
+#include<math.h>
+#include<stdio.h>
+// 素数表筛选
+int isPrime(int target) {
+	int i = 0;
+	if (target <= 1) {
+		printf("illegal input!\n");//素数定义
+		return -1;
+	}
+	for (i = 2; i <= sqrt(target); i++) {
+		if (target % i == 0)
+			return 0;
+	}
+	return 1;
+}
+
+int getNoPrime(int max,int numList[]){
+    int k=0;
+    for (int i=2;i<max;i++){
+        if (!isPrime(i)){
+          numList[k]=i;
+          ++k;
+        }
+    }
+    return k;
+}
+
+// @17
+int main(){
+    int max,much;
+    int numList[100]={0};
+    printf("请输入5到100数字:");
+    scanf("%d",&max);
+    much=getNoPrime(max,numList);
+    printf("大于1小于%d的有%d个非素数\n",max,much);
+    for (int i=0,k=0;i<much;i++,k++){
+        if (k==5) printf("\n"),k=0;
+        printf("%4d",numList[i]);
+    }
+}

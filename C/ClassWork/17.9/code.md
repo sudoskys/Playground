@@ -66,7 +66,7 @@ int main(){
 ```c
 // 数据限定：小于 100
 #include<stdio.h>
-int delete(int pos,int num[],int hash[]){
+void delete(int pos,int num[],int hash[]){
     for (int i=0;i<pos;i++){
         hash[num[i]]=5;
     }
@@ -74,7 +74,7 @@ int delete(int pos,int num[],int hash[]){
 
 int main(){
     int pos;
-    printf("输入个数：");
+    printf("输入数字：");
     scanf("%d",&pos);
     int num[pos];
     for (int i=0;i<pos;i++){
@@ -112,6 +112,61 @@ int main(){
     char t[50];
     gets(wat);
     char_convert(wat,t);
-    puts(t);
+    for (int i=0;i<strlen(t);i++){
+        printf("%c",t[i]);
+    }
+}
+```
+
+## 非素数寻找
+
+编写函数`int fun(int m,int xx[])`，实现将所有大于1小于m的非素数存入xx所指数组中，非素数的个数通过k返回。
+
+此题在Vscode环境下，因为math库的问题会生成失败，需要使用
+
+`gcc xxx -o xxx -lm`
+
+来生成。
+
+```c
+#include<math.h>
+#include<stdio.h>
+// 素数表筛选
+int isPrime(int target) {
+	int i = 0;
+	if (target <= 1) {
+		printf("illegal input!\n");//素数定义
+		return -1;
+	}
+	for (i = 2; i <= sqrt(target); i++) {
+		if (target % i == 0)
+			return 0;
+	}
+	return 1;
+}
+
+int getNoPrime(int max,int numList[]){
+    int k=0;
+    for (int i=2;i<max;i++){
+        if (!isPrime(i)){
+          numList[k]=i;
+          ++k;
+        }
+    }
+    return k;
+}
+
+// @17
+int main(){
+    int max,much;
+    int numList[100]={0};
+    printf("请输入5到100数字:");
+    scanf("%d",&max);
+    much=getNoPrime(max,numList);
+    printf("大于1小于%d的有%d个非素数\n",max,much);
+    for (int i=0,k=0;i<much;i++,k++){
+        if (k==5) printf("\n"),k=0;
+        printf("%4d",numList[i]);
+    }
 }
 ```
