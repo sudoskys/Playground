@@ -65,6 +65,28 @@ function warnUser(): void {
 
 // undefined
 let unuseable: void = undefined
+
 // null
 let n: null = null;
 
+// Never
+// 返回never的函数必须存在无法达到的终点
+function error(message: string): never {
+    throw new Error(message);
+}
+
+// 推断的返回值类型为never
+function fail() {
+    return error("Something failed");
+}
+
+// 类型断言 这....
+let someValue: any = "this is a string";
+let strLength: number = (someValue as string).length;
+
+//
+function f() {
+    var message = "Hello, world!";
+    message.slice(1)
+    return message;
+}
