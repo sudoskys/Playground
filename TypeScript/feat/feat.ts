@@ -90,3 +90,18 @@ function f() {
     message.slice(1)
     return message;
 }
+
+// 莫名其妙的返回
+
+function fs() {
+    var a = 10;
+    return function g() {
+        return a + 1;
+    }
+}
+
+var g = fs();
+g();
+
+
+
