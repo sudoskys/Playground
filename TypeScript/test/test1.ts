@@ -16,15 +16,14 @@ class Student {
     }
 }
 
-
 function greeter(person: Person) {
     return "Hello, " + person.firstName + " " + person.lastName;
 }
 
 // let user = {firstName: "Jane", lastName: "User"};
 
-let users = new Student("Jane", "M.", "User");
-
-
+let users = new Student("Jane", "M.", "Users");
+var hello = "Hello World---!";
+console.log(hello);
 document.body.innerHTML = greeter(users);
 
