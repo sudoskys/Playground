@@ -1,20 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAXSIZE 100 // 定义最大容量
+#define MAXSIZE 100 
+// 定义最大容量
 
-typedef int SElemType; // 定义栈元素类型
+typedef int SElemType; 
+// 定义栈元素类型
 
 typedef struct {
-    SElemType *base; // 栈底指针
-    SElemType *top; // 栈顶指针
-    int stacksize; // 当前已分配的存储空间，以元素为单位
+    SElemType *base; 
+    // 栈底指针
+    SElemType *top; 
+    // 栈顶指针
+    int stacksize; 
+    // 当前已分配的存储空间，以元素为单位
 } SqStack;
 
 // 初始化栈
 void InitStack(SqStack &S) {
-    S.base = (SElemType*) malloc(MAXSIZE * sizeof(SElemType)); // 动态分配存储空间
-    if (!S.base) // 分配失败
+    S.base = (SElemType*) malloc(MAXSIZE * sizeof(SElemType)); 
+    // 分配存储空间
+    if (!S.base) {
+    // 分配失败
         exit(1);
+        }
     S.top = S.base; // 空栈的栈顶指针是指向栈底的
     S.stacksize = MAXSIZE; // 最大容量
 }
@@ -49,14 +57,14 @@ int GetTop(SqStack S, SElemType &e) {
     if (S.top == S.base) // 栈为空
         return 0;
     e = *(S.top - 1); // 取出栈顶元素
-    return 1; // 取出成功
+    return 1;
 }
 
 // 入栈
 void Push(SqStack &S, SElemType e) {
     if (S.top - S.base == S.stacksize) // 栈满
         return;
-    *S.top++ = e; // 将元素压入栈中
+    *S.top++ = e;
 }
 
 // 出栈
@@ -75,7 +83,7 @@ void StackTraverse(SqStack S, void(*visit)(SElemType)) {
         visit(*p); // 访问元素
         p++; // 移动指针
     }
-    printf("n");
+    printf("\n");
 }
 
 // 访问元素
@@ -94,7 +102,7 @@ int main() {
     printf("请输入顺序栈数据元素个数: ");
     scanf("%d", &n);
 
-    printf("请输入顺序栈%d个整数:n", n);
+    printf("请输入顺序栈%d个整数:\n", n);
     for (i = 1; i <= n; i++) {
         scanf("%d", &item);
         Push(S, item); // 元素进栈
@@ -104,16 +112,16 @@ int main() {
     StackTraverse(S, visit); // 遍历并输出元素
 
     if (Pop(S, e)) // 出栈
-        printf("弹出栈顶元素e=%dn", e);
+        printf("弹出栈顶元素e=%d\n", e);
 
-    printf("栈空否:%d(1:空 0:否)n", StackEmpty(S)); // 判断是否为空栈
+    printf("栈空否:%d(1:空 0:否)\n", StackEmpty(S)); // 判断是否为空栈
 
     GetTop(S, e); // 获取栈顶元素
-    printf("栈顶元素 e=%d，栈长度为%dn", e, StackLength(S));
+    printf("栈顶元素 e=%d，栈长度为%d\n", e, StackLength(S));
 
     ClearStack(S); // 清空栈
 
-    printf("清空栈后，栈空否:%d(1:空 0:否)n", StackEmpty(S)); // 判断是否为空栈
+    printf("清空栈后，栈空否:%d(1:空 0:否)\n", StackEmpty(S)); // 判断是否为空栈
 
     DestroyStack(S); // 销毁栈
     return 0;
