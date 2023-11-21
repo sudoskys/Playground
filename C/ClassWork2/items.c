@@ -210,8 +210,7 @@ void run()
     } while (c != '5' && c != '4' && c != '3' && c != '2' && c != '1');
 }
 
-int main()
-{
+int main(){
     // 循环调用,直到用户ctrl+c退出
     while (1)
     {
