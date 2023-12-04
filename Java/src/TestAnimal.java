@@ -2,57 +2,55 @@
  * 多态的样例
  * */
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class TestAnimal {
     public static void main(String[] args) {
-        Animal a = new Cat();
+        Animal1 a = new Cat1();
         a.spark();
-        Animal b = new Dogs();
+        Animal1 b = new Dogs();
         b.spark();
 
         // 向下转型
-        Cat c = (Cat) a;
+        Cat1 c = (Cat1) a;
     }
 
     // 多态的实现
-    public static void classfiy(Animal a) {
+    public static void classfiy(Animal1 a) {
         // 判定a是否是Cat的实例
-        if (a instanceof Cat) {
-            Cat c = (Cat) a;
+        if (a instanceof Cat1) {
+            Cat1 c = (Cat1) a;
             c.spark();
         } else if (a instanceof Dogs) {
             Dogs d = (Dogs) a;
             d.spark();
         }
-        ArrayList<Animal> ist = new ArrayList<Animal>();
-        ist.add(new Cat());
+        ArrayList<Animal1> ist = new ArrayList<Animal1>();
+        ist.add(new Cat1());
         ist.add(new Dogs());
         // sort
-        Animal[] animals = new Animal[0];
+        Animal1[] animals = new Animal1[0];
         ist.toArray(animals);
-        for (Animal animal : ist) {
+        for (Animal1 animal : ist) {
             animal.spark();
         }
     }
 }
 
 
-abstract class Animal {
+abstract class Animal1 {
     void spark() {
         System.out.println("叫");
     }
 }
 
-class Cat extends Animal {
+class Cat1 extends Animal1 {
     public void spark() {
         System.out.println("喵");
     }
 }
 
-class Dogs extends Animal {
+class Dogs extends Animal1 {
     public void spark() {
         System.out.println("汪");
         System.out.print("父类调用:");
