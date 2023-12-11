@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class StringOperations {
     // Method to count the occurrence of a character in a string
     public static int charCount(char c, String str) {
@@ -19,6 +21,8 @@ public class StringOperations {
     public static String sort(String str) {
         char[] chars = str.substring(1, str.length() - 1).toCharArray();
         java.util.Arrays.sort(chars);
+        // 降序排列
+        // java.util.Arrays.sort(chars, Collections.reverseOrder());
         return str.charAt(0) + new String(chars) + str.charAt(str.length() - 1);
     }
 
@@ -32,9 +36,11 @@ public class StringOperations {
     }
 
     public static void main(String[] args) {
-        String str = "**abcdDABCabcd**DABC**";
-        char c = 'A';
-        int m = 3;
+        // 输入数据
+        Scanner sc = new Scanner(System.in);
+        String str = sc.nextLine();
+        char c = sc.next().charAt(0);
+        int m = sc.nextInt();
 
         System.out.println(StringOperations.charCount(c, str));
         System.out.println(StringOperations.moveStr(str, m));
