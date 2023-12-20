@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>太空火化公司</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .scroll-snap-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            min-width: 160px;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-arrow {
+            margin-left: 5px;
+        }
+
+        body {
+            color: white;
+        }
+
+        .scroll-snap-container section {
+            scroll-snap-align: start;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+        }
+        .btn {
+            @apply py-2 px-4 font-semibold;
+        }
+        .btn-green {
+            @apply text-white bg-green-500 hover:bg-green-700;
+        }
+    </style>
+</head>
+<body class="bg-cover bg-[url('images/nasa.jpg')] overflow-auto">
+<header class="bg-white bg-opacity-0 text-center p-5 flex items-center justify-between">
+    <img src="images/logo.svg" alt="Logo" class="w-14 h-14"> <!-- 调整 logo 大小 -->
+    <nav>
+        <ul class="flex">
+            <li class="mr-5 dropdown">
+                <a href="#">关于</a>
+                <span class="dropdown-arrow">▼</span>
+                <div class="dropdown-content">
+                    <a href="#">子菜单1</a>
+
+                    <a href="#">子菜单2</a>
+                </div>
+            </li>
+            <li class="mr-5 dropdown">
+                <a href="#">定价</a>
+                <span class="dropdown-arrow">▼</span>
+                <div class="dropdown-content">
+                    <a href="#">子菜单1</a>
+                    <a href="#">子菜单2</a>
+                </div>
+            </li>
+            <li class="mr-5 dropdown">
+                <a href="#">产品</a>
+                <span class="dropdown-arrow">▼</span>
+                <div class="dropdown-content">
+                    <a href="#">子菜单1</a>
+                    <a href="#">子菜单2</a>
+                </div>
+            </li>
+            <li class="mr-5 dropdown">
+                <a href="#">联系</a>
+                <span class="dropdown-arrow">▼</span>
+                <div class="dropdown-content">
+                    <a href="#">子菜单1</a>
+                    <a href="#">子菜单2</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<main class="scroll-snap-container">
+    <section>
+        <!--第一屏，，三个大标题和副标题上下排列-->
+        <div class="flex flex-col items-center">
+            <h1 class="text-6xl font-bold">太空</h1>
+            <h1 class="text-6xl font-bold">殡葬</h1>
+            <h1 class="text-6xl font-bold">一条龙服务</h1>
+            <h2 class="text-2xl font-bold">在世界各地提供太空葬服务</h2>
+
+            <div class="flex items-center">
+                <button class="btn btn-green mr-5">
+                    了解更多
+                </button>
+                <button class="btn btn-green">
+                    联系我们
+                </button>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="flex items-center">
+            <p class="w-1/2">
+                这里是右侧图像的介绍
+            </p>
+            <img src="images/flower.jpg" alt="右图像" class="w-1/2">
+        </div>
+    </section>
+    <section>
+        <div class="flex items-center">
+            <img src="images/flower.jpg" alt="左图像" class="w-1/2">
+            <p class="w-1/2">
+                这里是左侧图像的介绍
+            </p>
+        </div>
+    </section>
+</main>
+</body>
+</html>
