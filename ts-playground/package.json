@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "rollup": "^4.12.0",
     "source-map-loader": "^5.0.0",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
@@ -8,13 +9,20 @@
     "webpack-cli": "^4.10.0"
   },
   "scripts": {
-    "dev": "webpack"
+    "dev": "webpack",
+    "build": "rollup -c"
   },
   "dependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
     "@types/react": "^18.2.60",
     "@types/react-dom": "^18.2.19",
     "class-validator": "^0.14.1",
+    "md5": "^2.3.0",
+    "pino": "^8.19.0",
+    "pino-pretty": "^10.3.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "rollup-plugin-dts": "^6.1.0",
+    "tslib": "^2.6.2"
   }
 }
