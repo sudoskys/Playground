@@ -8,7 +8,6 @@ public class CollTest {
 
     public static void main(String[] args) {
         // 请在Begin-End间编写代码
-        /********** Begin **********/
 
         // 接收给定的字符串
         Scanner sc = new Scanner(System.in);
@@ -23,7 +22,6 @@ public class CollTest {
         for (Character c : list) {
             System.out.print(c);
         }
-        /********** End **********/
 
     }
 }

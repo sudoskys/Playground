@@ -13,7 +13,6 @@ import java.util.Scanner;
 public class CollTest {
     public static void main(String[] args) {
         // 请在Begin-End间编写代码
-        /********* Begin **********/
         // 第一步：接收给定的一行字符串
         Scanner sc = new Scanner(System.in);
         String task = sc.nextLine();
@@ -28,8 +27,8 @@ public class CollTest {
         // 第四步：往集合中添加元素
         ArrayList<String> lists = new ArrayList<>(Arrays.asList(split));
         // 第五步：删除第一个元素和最后一个元素
-        lists.remove(0);
-        lists.remove(lists.size() - 1);
+        lists.removeFirst();
+        lists.removeLast();
         // 第六步：往集合中添加hello和educoder
         lists.add("hello");
         lists.add("educoder");
@@ -37,6 +36,5 @@ public class CollTest {
         lists.set(2, "list");
         // 第五步：打印集合元素
         System.out.println(lists);
-        /********** End **********/
     }
 }
