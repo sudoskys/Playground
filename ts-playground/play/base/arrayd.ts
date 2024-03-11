@@ -5,7 +5,7 @@ set_d.add(2);
 set_d.add("abc");
 
 function de(...data: any[]): void {
-
+    console.log(data)
 }
 
 de(set_d)
