@@ -1,5 +1,5 @@
 // Base64
-import {logger} from "../logger";
+import {logger} from "../logger/index.ts";
 
 function base64Encode<T extends string | number>(data: T): string {
     return btoa(data.toString());

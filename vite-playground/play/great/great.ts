@@ -1,4 +1,4 @@
-import {pack_head} from "./pack.js"
+import {pack_head} from "../pack.ts"
 
 export function makeUid(person: string) {
     return "U_" + person
@@ -9,7 +9,7 @@ export interface MakeBot {
     bot_id: number,
 }
 
-class logger<T = any> {
+class logger<T> {
     info(data: T): null {
         console.log(data)
         return null
@@ -22,7 +22,7 @@ function WorkWithBot<T extends MakeBot>(bot: T) {
 }
 
 
-let bot = {bot_token: "AASS:888", bot_id: 115523}
+const bot = {bot_token: "AASS:888", bot_id: 115523}
 
 WorkWithBot(bot)
 
@@ -35,7 +35,7 @@ class Student {
     }
 }
 
-let student = new Student("119", "Jane")
+const student = new Student("119", "Jane")
 
 let log = new logger()
 
@@ -45,7 +45,7 @@ function createStudent(): Student {
     return new Student("121", "John");
 }
 
-let head = pack_head("122342")
+const head = pack_head("122342")
 log.info(head)
 log.info(createStudent())
 
@@ -76,8 +76,8 @@ greet({name: 'Alice', age: 25}); // Output: Hello, Alice. You are 25 years old.
 
 
 class UsersDto {
-    id: number;
-    username: string;
-    email: string
+    id: number = 0;
+    username: string = "";
+    email: string = "";
 }
 
