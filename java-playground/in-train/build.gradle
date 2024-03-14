@@ -9,6 +9,13 @@ repositories {
     mavenCentral()
 }
 
+// JAVA 21
+java { 
+    toolchain { 
+        languageVersion = JavaLanguageVersion.of(21) 
+    } 
+}
+
 dependencies {
     implementation('junit:junit:4.13.2')
     //testImplementation platform('org.junit:junit-bom:5.9.1')
