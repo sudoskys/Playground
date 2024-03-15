@@ -1,4 +1,4 @@
-package zh_convert;
+package week03.zh_convert;
 
 import com.spreada.utils.chinese.ZHConverter;
 

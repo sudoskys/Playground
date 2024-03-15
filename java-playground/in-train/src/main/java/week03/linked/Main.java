@@ -1,4 +1,4 @@
-package linked;
+package week03.linked;
 
 import java.util.HashSet;
 import java.util.LinkedList;
