@@ -1,0 +1,31 @@
+.top {
+    margin: 0 auto;
+    background-color: #F0F0F0;
+}
+
+.top .top_head {
+    width: 982px;
+    margin: 0 auto;
+    position: relative;
+    height: 100px;
+    padding: 0 10px;
+}
+
+.top_logo {
+    float: left;
+}
+
+.top_info {
+    float: right;
+}
+
+.navlink li {
+    float: left;
+    margin-left: 20px;
+    list-style: none;
+}
+
+
+
+
+
