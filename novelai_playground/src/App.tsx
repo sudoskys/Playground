@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import ProTip from './ProTip';
-import {LinearProgress} from '@mui/material';
+import {Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress} from '@mui/material';
 import {uniqueNamesGenerator, adjectives, colors, animals} from 'unique-names-generator';
 import {Box, Link, Typography, Container, IconButton} from "@mui/material";
 import {Button, Card, CardContent, TextField} from "@mui/material";
 import {useMediaQuery} from '@mui/material';
 import {Grid} from '@mui/material';
-import {Casino} from '@mui/icons-material';
+import {Casino, LockOpen, Lock} from '@mui/icons-material';
 import {AudioCard, AudioCardProps} from './AudioCard.tsx';
 import {FixedSizeList} from "react-window";
 import {useSpring, animated} from 'react-spring';
@@ -15,13 +15,15 @@ import AutoSizer from "react-virtualized-auto-sizer";
 // 对于 AudioCard，我们将其包装到 React.memo 中，以免不必要的重绘
 const MemoizedAudioCard = React.memo(AudioCard);
 
+const lockOpen = <LockOpen/>;
+const lock = <Lock style={{color: 'green'}}/>;
 
 function Copyright() {
     return (
         <Typography variant="body2" color="text.secondary" align="center">
             {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
+            <Link color="inherit" href="https://github.com/sudoskys">
+                sudoskys
             </Link>{' '}
             {new Date().getFullYear()}.
         </Typography>
@@ -38,6 +40,10 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
             audioUrl: audioUrl,
         };
     }
+    const [apiKey, setApiKey] = useState(localStorage.getItem('NOVELAI_API_KEY') || '');
+    const [showAPIKeyDialog, setShowAPIKeyDialog] = useState(false);
+    const [isKeyLocked, setIsKeyLocked] = useState(apiKey !== '');
+    // Loading
     const [isLoading, setIsLoading] = useState(false);
     // 输入框的预设
     const [prompt, setPrompt] = useState<string>("Hello World, This is a test for NovelAI");
@@ -52,6 +58,25 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
             clearInterval(timer);
         };
     }, [countdown]);
+    const onApiKeySubmit = (event: { preventDefault: () => void; }) => {
+        event.preventDefault();
+        localStorage.setItem('NOVELAI_API_KEY', apiKey);
+        setIsKeyLocked(true);
+        setShowAPIKeyDialog(false);
+        // Add additional verification against your server if needed
+    };
+    const onApiKeyClick = () => {
+        if (isKeyLocked) {
+            setApiKey('');
+            setIsKeyLocked(false);
+            localStorage.removeItem('NOVELAI_API_KEY');
+        } else {
+            setShowAPIKeyDialog(true);
+        }
+    };
+    const updateApiKey = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setApiKey(event.target.value);
+    };
     const generateRandomSeed = () => {
         const randomName: string = uniqueNamesGenerator({
             dictionaries: [adjectives, colors, animals]
@@ -67,7 +92,7 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
             credentials: 'include',
             headers: {
                 'accept': 'application/json',
-                'Authorization': 'Bearer ' + import.meta.env.VITE_NOVELAI_API_KEY || '',
+                'Authorization': `Bearer ${apiKey}`
                 //import.meta.env.VITE_NOVELAI_API_KEY || '',
             },
         });
@@ -87,9 +112,33 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
         <Card variant="outlined">
             <CardContent sx={{p: 3}}>
                 {/*标题*/}
-                <Typography variant="h5" component="h5" sx={{mb: 2}}>
-                    Prompt
-                </Typography>
+                <Box sx={{display: "flex", alignItems: "center"}}>
+                    <Typography variant="h5" component="h5" sx={{mb: 2}}>
+                        Prompt
+                    </Typography>
+                    <IconButton onClick={onApiKeyClick} sx={{justifySelf: 'flex-end', marginLeft: 'auto'}}>
+                        {isKeyLocked ? lock : lockOpen}
+                    </IconButton>
+                </Box>
+                {/* The rest of your component */}
+                <Dialog open={showAPIKeyDialog} onClose={onApiKeyClick}>
+                    <DialogTitle id="form-dialog-title">Enter your API Key:</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            id="apikey-dialog"
+                            type="text"
+                            fullWidth
+                            value={apiKey}
+                            onChange={updateApiKey}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={onApiKeySubmit} type="submit" disabled={apiKey === ''}>
+                            Save
+                        </Button>
+                    </DialogActions>
+                </Dialog>
                 {/* 添加一个文本输入*/}
                 <TextField
                     id="prompt"
@@ -133,13 +182,6 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
                     Generate
                 </Button>
                 <br/>
-                <Typography variant="h6" component="h6" sx={{mt: 2}}>
-                    Countdown: {countdown}
-                </Typography>
-                {/*加10秒*/}
-                <Button variant="contained" sx={{mt: 2}} onClick={() => setCountdown(countdown + 10)}>
-                    Add 10S
-                </Button>
             </CardContent>
             <Box sx={{width: '100%'}}>
                 {isLoading && <LinearProgress/>}
@@ -153,7 +195,7 @@ function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boo
         // Note: We invert the order to display the newest items at the top
         const audioData = data[data.length - index - 1];
         return (
-            <div style={{...style, paddingBottom: '5px'}} key={audioData.audioUrl}>
+            <div style={{...style, padding: '5px'}} key={audioData.audioUrl}>
                 <MemoizedAudioCard
                     title={audioData.title}
                     subTitle={audioData.subTitle}
@@ -179,7 +221,7 @@ function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boo
                                 height={height}
                                 width={width}
                                 itemCount={result.length}
-                                itemSize={120}
+                                itemSize={115}
                                 itemData={result}
                             >
                                 {Row}
