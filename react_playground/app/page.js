@@ -1,6 +1,5 @@
 import LikeButton from './like-button';
-import {ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Typography} from "@mui/material";
-import ContentCut from '@mui/icons-material/ContentCut';
+import {ListItemText, MenuItem, MenuList, Paper} from "@mui/material";
 
 function Header({title}) {
     return <h1>Develop. Preview. Ship {title}.</h1>;
