@@ -1,4 +1,6 @@
 import LikeButton from './like-button';
+import {ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Typography} from "@mui/material";
+import ContentCut from '@mui/icons-material/ContentCut';
 
 function Header({title}) {
     return <h1>Develop. Preview. Ship {title}.</h1>;
@@ -11,9 +13,14 @@ export default function HomePage() {
         {/* Nesting the Header component */}
         <h1>H1</h1>
         <Header title="React"/>
-        <ul>
-            {names.map((name) => (<li key={name}>{name}</li>))}
-        </ul>
+        <Paper sx={{width: 320, maxWidth: '100%'}}>
+            <MenuList>
+                <MenuItem>
+                    <ListItemText>Cut</ListItemText>
+                </MenuItem>
+                {names.map((name) => (<MenuItem><ListItemText>{name}</ListItemText></MenuItem>))}
+            </MenuList>
+        </Paper>
         <LikeButton/>
     </div>);
 }

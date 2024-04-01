@@ -1,5 +1,6 @@
 'use client';
 import {useState} from "react";
+import {Button} from "@mui/material";
 
 export default function LikeButton() {
     const [likes, setLikes] = useState(0);
@@ -8,5 +9,5 @@ export default function LikeButton() {
         setLikes(likes + 1);
     }
 
-    return <button onClick={handleClick}>Like ({likes})</button>;
+    return <Button onClick={handleClick} variant="contained">Like ({likes})</Button>
 }
