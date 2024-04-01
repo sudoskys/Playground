@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import ProTip from './ProTip';
-import {Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress} from '@mui/material';
+import {Alert, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, Snackbar} from '@mui/material';
 import {uniqueNamesGenerator, adjectives, colors, animals} from 'unique-names-generator';
 import {Box, Link, Typography, Container, IconButton} from "@mui/material";
 import {Button, Card, CardContent, TextField} from "@mui/material";
@@ -31,15 +31,8 @@ function Copyright() {
 }
 
 function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<AudioCardProps[]>> }) {
-    const buildAudioData = (title: string, audioUrl: string, seed: string) => {
-        // 截取title的前10个字符
-        return {
-            // imageUrl: `https://source.unsplash.com/featured/?${seed}`,
-            title: `${title}`,
-            subTitle: `${seed}`,
-            audioUrl: audioUrl,
-        };
-    }
+    const [open, setOpen] = useState(false);
+    const [error, setError] = useState('');
     const [apiKey, setApiKey] = useState(localStorage.getItem('NOVELAI_API_KEY') || '');
     const [showAPIKeyDialog, setShowAPIKeyDialog] = useState(false);
     const [isKeyLocked, setIsKeyLocked] = useState(apiKey !== '');
@@ -58,6 +51,26 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
             clearInterval(timer);
         };
     }, [countdown]);
+    const buildAudioData = (title: string, audioUrl: string, seed: string) => {
+        // 截取title的前10个字符
+        return {
+            // imageUrl: `https://source.unsplash.com/featured/?${seed}`,
+            title: `${title}`,
+            subTitle: `${seed}`,
+            audioUrl: audioUrl,
+        };
+    }
+    const handleClose = (event, reason: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
+    const handleError = (error: React.SetStateAction<string>) => {
+        setError(error);
+        setOpen(true);
+    }
     const onApiKeySubmit = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         localStorage.setItem('NOVELAI_API_KEY', apiKey);
@@ -84,28 +97,32 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
         setSeed(randomName);
     }
     const generateVoice = async () => {
-        setIsLoading(true);
-        const response = await fetch('/backend/ai/generate-voice?text=' + encodeURIComponent(prompt) + '&voice=-1&seed=' + encodeURIComponent(seed) + '&opus=false&version=v2', {
-            method: 'GET',
-            redirect: 'follow',
-            credentials: 'include',
-            headers: {
-                'accept': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
-                //import.meta.env.VITE_NOVELAI_API_KEY || '',
-            },
-        });
-        const buffer = await response.arrayBuffer();
-        // console.log(buffer);
-        const blob = new Blob([buffer], {type: 'audio/mp3'});
-        const url = URL.createObjectURL(blob);
-        // console.log(url);
-        // 添加到列表
-        setResult(oldArray => [...oldArray, buildAudioData(prompt, url, seed)]);
-        // 重置Seed
-        generateRandomSeed();
-        setIsLoading(false);
-    }
+        try {
+            setIsLoading(true);
+            const response = await fetch('/backend/ai/generate-voice?text=' + encodeURIComponent(prompt) + '&voice=-1&seed=' + encodeURIComponent(seed) + '&opus=false&version=v2', {
+                method: 'GET',
+                redirect: 'follow',
+                credentials: 'include',
+                headers: {
+                    'accept': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Error: " + response.status);
+            }
+
+            const buffer = await response.arrayBuffer();
+            const blob = new Blob([buffer], {type: 'audio/mp3'});
+            const url = URL.createObjectURL(blob);
+            setResult(oldArray => [...oldArray, buildAudioData(prompt, url, seed)]);
+            generateRandomSeed();
+            setIsLoading(false);
+        } catch (error) {
+            handleError(error.message);
+            setIsLoading(false);
+        }
+    };
 
     return (
         <Card variant="outlined">
@@ -189,6 +206,11 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
             <Box sx={{width: '100%'}}>
                 {isLoading && <LinearProgress/>}
             </Box>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="warning" sx={{width: '100%'}}>
+                    {error}
+                </Alert>
+            </Snackbar>
         </Card>
     )
 }
