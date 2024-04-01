@@ -145,11 +145,11 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
     )
 }
 
-function ResultSection({result}: { result: AudioCardProps[] }) {
+function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boolean }) {
     const renderRow = ({index, style}: any) => {
         const audioData = result[result.length - index - 1];
         return (
-            <div style={style} key={audioData.audioUrl}>
+            <div style={style} key={audioData.audioUrl} >
                 <MemoizedAudioCard
                     title={audioData.title}
                     subTitle={audioData.subTitle}
@@ -158,17 +158,18 @@ function ResultSection({result}: { result: AudioCardProps[] }) {
             </div>
         );
     };
+    const margin_top = is_mob ? 2 : 0; // adjust the margin after title
 
+    // Adjusted the margin after title
     return (
         result.length > 0 && (
-            <Card variant="outlined" sx={{mt: 2}}>
+            <Card variant="outlined" sx={{mt: margin_top}}>
                 <CardContent sx={{p: 3}}>
-                    <Typography variant="h5" component="h5" sx={{mb: 2}}>
+                    <Typography variant="h5" component="h5" sx={{mb: 1}}>
                         Result
                     </Typography>
-                    <br/>
                     <FixedSizeList
-                        height={300}
+                        height={450}
                         width="100%"
                         itemCount={result.length}
                         itemSize={100}
@@ -181,8 +182,6 @@ function ResultSection({result}: { result: AudioCardProps[] }) {
     );
 }
 
-
-// 将 result 状态提升到 App 组件，并通过 props 传给 MainPage 和 ResultSection
 export default function App() {
     const isMobile = useMediaQuery('(max-width:600px)');
     const [result, setResult] = useState<AudioCardProps[]>([]);
@@ -199,7 +198,7 @@ export default function App() {
     });
 
     const direction = result.length > 0 ? 'row' : 'column';
-    // 如果没有结果，将主要内容放在中间，有结果时，将主要内容放在左侧
+    // Similar logic applied here but instead of setting both, `alignItems` to `flex-start` is sufficient
     const align = result.length > 0 ? 'flex-start' : 'center';
     return (
         <Container maxWidth="lg">
@@ -215,13 +214,13 @@ export default function App() {
                     </Grid>
                     {!isMobile && result.length > 0 && (
                         <Grid item md={6} xs={12}>
-                            <ResultSection result={result}/>
+                            <ResultSection result={result} is_mob={isMobile}/>
                         </Grid>
                     )}
                 </Grid>
                 {isMobile && result.length > 0 && (
                     <>
-                        <ResultSection result={result}/>
+                        <ResultSection result={result} is_mob={isMobile}/>
                     </>
                 )}
                 <ProTip/>
