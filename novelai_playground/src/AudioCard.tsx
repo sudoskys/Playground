@@ -52,7 +52,7 @@ export const AudioCard: React.FC<AudioCardProps> = ({title, subTitle, audioUrl})
             borderColor: 'divider',
             marginBottom: 2
         }}>
-            <Box sx={{flex: '1 1', pr: 2}}>
+            <Box sx={{flex: '1 1', pr: 2, width: "80%"}}>
                 <CardContent sx={{padding: 1}}>
                     <Typography
                         component="div"
@@ -85,7 +85,7 @@ export const AudioCard: React.FC<AudioCardProps> = ({title, subTitle, audioUrl})
                     </CopyToClipboard>
                 </CardContent>
             </Box>
-            <Box sx={{display: 'flex', alignItems: 'center'}}>
+            <Box sx={{display: 'flex', alignItems: 'center', width: "20%"}}>
                 <IconButton aria-label="play/pause" onClick={handlePlayPauseClick}
                             sx={{color: isPlaying ? 'success.main' : 'royalblue', marginRight: 1}}>
                     {isPlaying ? <PauseIcon/> : <PlayArrowIcon/>}
@@ -97,7 +97,7 @@ export const AudioCard: React.FC<AudioCardProps> = ({title, subTitle, audioUrl})
                 </a>
             </Box>
             <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                 open={openSnackbar}
                 onClose={handleClose}
                 autoHideDuration={2000}

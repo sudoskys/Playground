@@ -198,7 +198,7 @@ function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boo
         // Note: We invert the order to display the newest items at the top
         const audioData = data[data.length - index - 1];
         return (
-            <div style={{...style, padding: '5px'}} key={audioData.audioUrl}>
+            <div style={{...style, padding: '5px', width: "100%"}} key={audioData.audioUrl}>
                 <MemoizedAudioCard
                     title={audioData.title}
                     subTitle={audioData.subTitle}
@@ -214,7 +214,7 @@ function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boo
         result.length > 0 && (
             // The Card component now fills its parent element
             <Card variant="outlined" sx={{mt: margin_top, height: '500px', width: '100%'}} style={{flexGrow: 1}}>
-                <CardContent sx={{p: 3, height: '100%'}}>
+                <CardContent sx={{p: 3, height: '100%', width: "100%"}}>
                     <Typography variant="h5" component="h5" sx={{mb: 1}}>
                         Result
                     </Typography>
