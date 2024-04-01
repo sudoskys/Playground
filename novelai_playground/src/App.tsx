@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import ProTip from './ProTip';
 import {LinearProgress} from '@mui/material';
 import {uniqueNamesGenerator, adjectives, colors, animals} from 'unique-names-generator';
@@ -144,8 +144,20 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
     )
 }
 
-
 function ResultSection({result}: { result: AudioCardProps[] }) {
+    const renderRow = ({index, style}: any) => {
+        const audioData = result[result.length - index - 1];
+        return (
+            <div style={style} key={audioData.audioUrl}>
+                <MemoizedAudioCard
+                    title={audioData.title}
+                    subTitle={audioData.subTitle}
+                    audioUrl={audioData.audioUrl}
+                />
+            </div>
+        );
+    };
+
     return (
         result.length > 0 && (
             <Card variant="outlined" sx={{mt: 2}}>
@@ -154,16 +166,14 @@ function ResultSection({result}: { result: AudioCardProps[] }) {
                         Result
                     </Typography>
                     <br/>
-                    {[...result].reverse().map((audioData) => (
-                        <div className="animate-fade-in" key={audioData.audioUrl}>
-                            <AudioCard
-                                key={audioData.audioUrl}
-                                title={audioData.title}
-                                subTitle={audioData.subTitle}
-                                audioUrl={audioData.audioUrl}
-                            />
-                        </div>
-                    ))}
+                    <FixedSizeList
+                        height={300}
+                        width="100%"
+                        itemCount={result.length}
+                        itemSize={100}
+                    >
+                        {renderRow}
+                    </FixedSizeList>
                 </CardContent>
             </Card>
         )
@@ -175,23 +185,31 @@ function ResultSection({result}: { result: AudioCardProps[] }) {
 export default function App() {
     const isMobile = useMediaQuery('(max-width:600px)');
     const [result, setResult] = useState<AudioCardProps[]>([]);
+
     return (
         <Container maxWidth="lg">
             <Box sx={{my: 4}}>
                 <Typography variant="h4" component="h1" sx={{mb: 2}}>
                     NovelAI
                 </Typography>
-                <Grid container spacing={3}>
+                <Grid container spacing={3} alignItems="flex-start">
                     <Grid item md={6} xs={12}>
                         <MainPage setResult={setResult}/>
                     </Grid>
-                    {!isMobile && (
+                    {!isMobile && result.length > 0 && (
                         <Grid item md={6} xs={12}>
                             <ResultSection result={result}/>
                         </Grid>
                     )}
                 </Grid>
-                {isMobile && <ResultSection result={result}/>}
+                {isMobile && result.length > 0 && (
+                    <>
+                        <Typography variant="h5" component="h2" sx={{mb: 2}}>
+                            Result
+                        </Typography>
+                        <ResultSection result={result}/>
+                    </>
+                )}
                 <ProTip/>
                 <Copyright/>
             </Box>
