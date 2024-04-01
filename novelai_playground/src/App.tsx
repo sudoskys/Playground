@@ -9,6 +9,7 @@ import {Grid} from '@mui/material';
 import {Casino} from '@mui/icons-material';
 import {AudioCard, AudioCardProps} from './AudioCard.tsx';
 import {FixedSizeList} from "react-window";
+import {useSpring, animated} from 'react-spring';
 
 // 对于 AudioCard，我们将其包装到 React.memo 中，以免不必要的重绘
 const MemoizedAudioCard = React.memo(AudioCard);
@@ -185,16 +186,32 @@ function ResultSection({result}: { result: AudioCardProps[] }) {
 export default function App() {
     const isMobile = useMediaQuery('(max-width:600px)');
     const [result, setResult] = useState<AudioCardProps[]>([]);
+    const animationProps = useSpring({
+        from: result.length > 0 ? {opacity: 1, transform: 'translateY(0%)'} : {
+            opacity: 0,
+            transform: 'translateY(-50%)'
+        },
+        to: {opacity: 1, transform: 'translateY(0%)'},
+        config: {
+            tension: 210,
+            friction: 20
+        }
+    });
 
+    const direction = result.length > 0 ? 'row' : 'column';
+    // 如果没有结果，将主要内容放在中间，有结果时，将主要内容放在左侧
+    const align = result.length > 0 ? 'flex-start' : 'center';
     return (
         <Container maxWidth="lg">
             <Box sx={{my: 4}}>
                 <Typography variant="h4" component="h1" sx={{mb: 2}}>
                     NovelAI
                 </Typography>
-                <Grid container spacing={3} alignItems="flex-start">
+                <Grid container spacing={3} direction={direction} alignItems={align}>
                     <Grid item md={6} xs={12}>
-                        <MainPage setResult={setResult}/>
+                        <animated.div style={animationProps}>
+                            <MainPage setResult={setResult}/>
+                        </animated.div>
                     </Grid>
                     {!isMobile && result.length > 0 && (
                         <Grid item md={6} xs={12}>
@@ -204,9 +221,6 @@ export default function App() {
                 </Grid>
                 {isMobile && result.length > 0 && (
                     <>
-                        <Typography variant="h5" component="h2" sx={{mb: 2}}>
-                            Result
-                        </Typography>
                         <ResultSection result={result}/>
                     </>
                 )}
