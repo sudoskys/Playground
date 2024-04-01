@@ -60,7 +60,7 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
             audioUrl: audioUrl,
         };
     }
-    const handleClose = (event, reason: string) => {
+    const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -207,7 +207,10 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
                 {isLoading && <LinearProgress/>}
             </Box>
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="warning" sx={{width: '100%'}}>
+
+                <Alert onClose={handleClose}
+                       severity="warning"
+                       sx={{width: '100%'}}>
                     {error}
                 </Alert>
             </Snackbar>
