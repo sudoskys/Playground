@@ -85,7 +85,7 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
     }
     const generateVoice = async () => {
         setIsLoading(true);
-        const response = await fetch('https://api.novelai.net/ai/generate-voice?text=' + encodeURIComponent(prompt) + '&voice=-1&seed=' + encodeURIComponent(seed) + '&opus=false&version=v2', {
+        const response = await fetch('/api/generate-voice?text=' + encodeURIComponent(prompt) + '&voice=-1&seed=' + encodeURIComponent(seed) + '&opus=false&version=v2', {
             method: 'GET',
             mode: 'cors',
             redirect: 'follow',
@@ -191,7 +191,7 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
 }
 
 function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boolean }) {
-    const Row = ({index, style, data}: { index: number, style: Object, data: AudioCardProps[] }) => {
+    const Row = ({index, style, data}: { index: number, style: NonNullable<unknown>, data: AudioCardProps[] }) => {
         // Note: We invert the order to display the newest items at the top
         const audioData = data[data.length - index - 1];
         return (
