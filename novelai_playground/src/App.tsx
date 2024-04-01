@@ -177,7 +177,11 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
                 </Box>
                 <br/>
                 {/* 添加一个生成按钮*/}
-                <Button variant="contained" sx={{mt: 2}} onClick={generateVoice} disabled={isLoading}>
+                <Button variant="contained"
+                        sx={{mt: 2}}
+                        onClick={generateVoice}
+                        disabled={!apiKey || isLoading}
+                >
                     Generate
                 </Button>
                 <br/>
