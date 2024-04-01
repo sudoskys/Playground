@@ -85,9 +85,8 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
     }
     const generateVoice = async () => {
         setIsLoading(true);
-        const response = await fetch('/api/generate-voice?text=' + encodeURIComponent(prompt) + '&voice=-1&seed=' + encodeURIComponent(seed) + '&opus=false&version=v2', {
+        const response = await fetch('/backend/ai/generate-voice?text=' + encodeURIComponent(prompt) + '&voice=-1&seed=' + encodeURIComponent(seed) + '&opus=false&version=v2', {
             method: 'GET',
-            mode: 'cors',
             redirect: 'follow',
             credentials: 'include',
             headers: {

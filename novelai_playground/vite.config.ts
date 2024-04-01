@@ -6,10 +6,10 @@ import UnoCSS from 'unocss/vite'
 export default defineConfig({
     server: {
         proxy: {
-            '/api': {
+            '/backend': {
                 target: 'https://api.novelai.net',
                 changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, '')
+                rewrite: (path) => path.replace(/^\/backend/, '')
             }
         }
     },
