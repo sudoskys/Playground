@@ -10,6 +10,7 @@ import {Casino} from '@mui/icons-material';
 import {AudioCard, AudioCardProps} from './AudioCard.tsx';
 import {FixedSizeList} from "react-window";
 import {useSpring, animated} from 'react-spring';
+import AutoSizer from "react-virtualized-auto-sizer";
 
 // 对于 AudioCard，我们将其包装到 React.memo 中，以免不必要的重绘
 const MemoizedAudioCard = React.memo(AudioCard);
@@ -77,6 +78,8 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
         // console.log(url);
         // 添加到列表
         setResult(oldArray => [...oldArray, buildAudioData(prompt, url, seed)]);
+        // 重置Seed
+        generateRandomSeed();
         setIsLoading(false);
     }
 
@@ -146,10 +149,11 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
 }
 
 function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boolean }) {
-    const renderRow = ({index, style}: any) => {
-        const audioData = result[result.length - index - 1];
+    const Row = ({index, style, data}: { index: number, style: Object, data: AudioCardProps[] }) => {
+        // Note: We invert the order to display the newest items at the top
+        const audioData = data[data.length - index - 1];
         return (
-            <div style={style} key={audioData.audioUrl} >
+            <div style={{...style, paddingBottom: '5px'}} key={audioData.audioUrl}>
                 <MemoizedAudioCard
                     title={audioData.title}
                     subTitle={audioData.subTitle}
@@ -158,24 +162,30 @@ function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boo
             </div>
         );
     };
-    const margin_top = is_mob ? 2 : 0; // adjust the margin after title
 
-    // Adjusted the margin after title
+    const margin_top = is_mob ? 2 : 0; // Adjust the margin after title
+
     return (
         result.length > 0 && (
-            <Card variant="outlined" sx={{mt: margin_top}}>
-                <CardContent sx={{p: 3}}>
+            // The Card component now fills its parent element
+            <Card variant="outlined" sx={{mt: margin_top, height: '500px', width: '100%'}} style={{flexGrow: 1}}>
+                <CardContent sx={{p: 3, height: '100%'}}>
                     <Typography variant="h5" component="h5" sx={{mb: 1}}>
                         Result
                     </Typography>
-                    <FixedSizeList
-                        height={450}
-                        width="100%"
-                        itemCount={result.length}
-                        itemSize={100}
-                    >
-                        {renderRow}
-                    </FixedSizeList>
+                    <AutoSizer>
+                        {({height, width}) => (
+                            <FixedSizeList
+                                height={height}
+                                width={width}
+                                itemCount={result.length}
+                                itemSize={120}
+                                itemData={result}
+                            >
+                                {Row}
+                            </FixedSizeList>
+                        )}
+                    </AutoSizer>
                 </CardContent>
             </Card>
         )
@@ -198,15 +208,14 @@ export default function App() {
     });
 
     const direction = result.length > 0 ? 'row' : 'column';
-    // Similar logic applied here but instead of setting both, `alignItems` to `flex-start` is sufficient
-    const align = result.length > 0 ? 'flex-start' : 'center';
+    const align = result.length > 0 ? "flex-start" : "center";
     return (
         <Container maxWidth="lg">
             <Box sx={{my: 4}}>
                 <Typography variant="h4" component="h1" sx={{mb: 2}}>
                     NovelAI
                 </Typography>
-                <Grid container spacing={3} direction={direction} alignItems={align}>
+                <Grid container spacing={3} direction={direction} alignItems={align} style={{display: 'flex'}}>
                     <Grid item md={6} xs={12}>
                         <animated.div style={animationProps}>
                             <MainPage setResult={setResult}/>
@@ -219,9 +228,7 @@ export default function App() {
                     )}
                 </Grid>
                 {isMobile && result.length > 0 && (
-                    <>
-                        <ResultSection result={result} is_mob={isMobile}/>
-                    </>
+                    <ResultSection result={result} is_mob={isMobile}/>
                 )}
                 <ProTip/>
                 <Copyright/>
