@@ -60,10 +60,12 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
             audioUrl: audioUrl,
         };
     }
-    const handleClose = (event, reason) => {
+
+    const handleClose = (_event: React.SyntheticEvent | Event, reason: string) => {
         if (reason === 'clickaway') {
             return;
         }
+
         setOpen(false);
     };
 
@@ -99,7 +101,7 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
     const generateVoice = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch('/backend/ai/generate-voice?text=' + encodeURIComponent(prompt) + '&voice=-1&seed=' + encodeURIComponent(seed) + '&opus=false&version=v2', {
+            const response = await fetch(`/backend/ai/generate-voice?text=${encodeURIComponent(prompt)}&voice=-1&seed=${encodeURIComponent(seed)}&opus=false&version=v2`, {
                 method: 'GET',
                 redirect: 'follow',
                 credentials: 'include',
@@ -109,17 +111,30 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
                 },
             });
             if (!response.ok) {
-                throw new Error("Error: " + response.status);
+                handleError('Server Error: ' + response.status);
+                setIsLoading(false);
+                return;
             }
 
             const buffer = await response.arrayBuffer();
+            // Check if ArrayBuffer is empty
+            if (buffer.byteLength === 0) {
+                handleError('Empty audio data received');
+                setIsLoading(false);
+                return;
+            }
+
             const blob = new Blob([buffer], {type: 'audio/mp3'});
             const url = URL.createObjectURL(blob);
-            setResult(oldArray => [...oldArray, buildAudioData(prompt, url, seed)]);
+            setResult(oldArray => [...oldArray, buildAudioData(prompt, url ?? "Invalid audio data", seed ?? "No seed generated")]);
             generateRandomSeed();
-            setIsLoading(false);
         } catch (error) {
-            handleError(error.message);
+            if (error instanceof Error) {
+                handleError(`Error generating voice: ${error.message}`);
+            } else {
+                handleError("Unexpected error occurred");
+            }
+        } finally {
             setIsLoading(false);
         }
     };
@@ -206,13 +221,11 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
             <Box sx={{width: '100%'}}>
                 {isLoading && <LinearProgress/>}
             </Box>
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-
-                <Alert onClose={handleClose}
-                       severity="warning"
-                       sx={{width: '100%'}}>
-                    {error}
-                </Alert>
+            <Snackbar open={open}
+                      autoHideDuration={6000}
+                      onClose={handleClose}
+                      message={error}
+            >
             </Snackbar>
         </Card>
     )
