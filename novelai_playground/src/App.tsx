@@ -110,13 +110,12 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
                     'Authorization': `Bearer ${apiKey}`
                 },
             });
-            /*
+
             if (!response.ok) {
                 handleError('Server Error: ' + response.status);
                 setIsLoading(false);
                 return;
             }
-            */
 
 
             const buffer = await response.arrayBuffer();
