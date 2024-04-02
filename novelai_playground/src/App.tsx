@@ -105,15 +105,18 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
         try {
             setIsLoading(true);
             /*
-            const response = await fetch(`/backend/ai/generate-voice?text=${encodeURIComponent(prompt)}&voice=-1&seed=${encodeURIComponent(seed)}&opus=false&version=v2`, {
+            let headers = IS_NEED_AUTH ? {
                 method: 'GET',
                 redirect: 'follow',
                 credentials: 'include',
                 headers: {
-                    'accept': 'application/json',
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${apiKey}`
-                },
-            });
+                }
+            } : {
+                method: 'GET',
+                redirect: 'follow',
+            };
             */
             const response = await fetch(`/backend/ai/generate-voice?text=${encodeURIComponent(prompt)}&voice=-1&seed=${encodeURIComponent(seed)}&opus=false&version=v2`, {
                 "headers": {
