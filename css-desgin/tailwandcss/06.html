@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/tailwind.min.css">
+
+</head>
+
+<body class="bg-slate-200 flex flex-col items-center">
+    <!--文章起始-->
+    <div class="py-5 flex items-center flex-col w-2/3">
+        <!--文段标题，采用磨砂的圆角居中卡片-->
+        <div
+            class="rounded-md flex p-6 max-w-sm bg-white shadow-sm space-x-4 mx-auto shrink-0 self-start justify-start">
+            `hover`、`focus`和`active` 的不同
+        </div>
+        `hover`、`focus`和`active`都是CSS伪类，它们用于描述元素在特定状态下的样式。
+       <br/> 
+        - `hover`：当用户的鼠标悬停在元素上时，该元素就处于`hover`状态。在此状态下，可以应用特定的样式。例如，改变链接的颜色。
+        <br/>
+        - `focus`：当元素获得焦点时，该元素就处于`focus`状态。元素可以通过键盘（如使用Tab键）或者通过特定的用户界面来获得焦点。在此状态下，可以应用特定的样式。例如，为输入框添加边框。
+        <br/>
+        - `active`：当用户在元素上按下（通常是鼠标按键）并尚未释放时，该元素就处于`active`状态。在此状态下，可以应用特定的样式。例如，改变按钮的背景颜色。
+        这三种状态通常用于增强用户体验，使用户能够更清楚地知道他们正在与哪个元素交互。
+    </div>
+    <!--文章結束-->
+    <div class="rounded-md flex p-6 max-w-sm bg-white shadow-lg items-center space-x-4 mx-auto shrink-0">
+        <div class="shrink-0">
+            <img src="https://via.placeholder.com/150" alt="Profile Picture" class="w-16 h-16 rounded-full">
+        </div>
+        <div class="text-xl font-medium text-black">Hello</div>
+        <p class="text-slate-500">This is a message</p>
+        <a class="text-blue-500 hover:decoration-slate-400 hover:underline" href="#">Read more</a>
+    </div>
+    </div>
+    <!-- define unocss options... -->
+    <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime/uno.global.js"></script>
+</body>
+
+</html>
