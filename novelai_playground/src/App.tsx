@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import ProTip from './ProTip';
-import {Alert, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, Snackbar} from '@mui/material';
+import {Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, Snackbar} from '@mui/material';
 import {uniqueNamesGenerator, adjectives, colors, animals} from 'unique-names-generator';
 import {Box, Link, Typography, Container, IconButton} from "@mui/material";
 import {Button, Card, CardContent, TextField} from "@mui/material";
