@@ -224,10 +224,12 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
             <Box sx={{width: '100%'}}>
                 {isLoading && <LinearProgress/>}
             </Box>
-            <Snackbar open={open}
-                      autoHideDuration={6000}
-                      onClose={handleClose}
-                      message={error}
+            <Snackbar
+                anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                open={open}
+                autoHideDuration={2000}
+                onClose={handleClose}
+                message={error}
             >
             </Snackbar>
         </Card>
