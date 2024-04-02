@@ -18,6 +18,9 @@ const MemoizedAudioCard = React.memo(AudioCard);
 const lockOpen = <LockOpen/>;
 const lock = <Lock style={{color: 'green'}}/>;
 
+// 设置常量控制是否需要鉴权
+const IS_NEED_AUTH = false; // 如果不需要鉴权，设置为 false
+
 function Copyright() {
     return (
         <Typography variant="body2" color="text.secondary" align="center">
@@ -101,6 +104,7 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
     const generateVoice = async () => {
         try {
             setIsLoading(true);
+            /*
             const response = await fetch(`/backend/ai/generate-voice?text=${encodeURIComponent(prompt)}&voice=-1&seed=${encodeURIComponent(seed)}&opus=false&version=v2`, {
                 method: 'GET',
                 redirect: 'follow',
@@ -109,6 +113,28 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
                     'accept': 'application/json',
                     'Authorization': `Bearer ${apiKey}`
                 },
+            });
+            */
+            const response = await fetch(`/backend/ai/generate-voice?text=${encodeURIComponent(prompt)}&voice=-1&seed=${encodeURIComponent(seed)}&opus=false&version=v2`, {
+                "headers": {
+                    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                    "accept-language": "zh-CN,zh;q=0.9",
+                    "cache-control": "no-cache",
+                    "pragma": "no-cache",
+                    "sec-ch-ua": "\"Chromium\";v=\"123\", \"Not:A-Brand\";v=\"8\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "sec-ch-ua-platform": "\"Linux\"",
+                    "sec-fetch-dest": "document",
+                    "sec-fetch-mode": "navigate",
+                    "sec-fetch-site": "none",
+                    "sec-fetch-user": "?1",
+                    "upgrade-insecure-requests": "1"
+                },
+                "referrerPolicy": "strict-origin-when-cross-origin",
+                "body": null,
+                "method": "GET",
+                "mode": "cors",
+                "credentials": "include"
             });
 
             if (!response.ok) {
@@ -149,9 +175,11 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
                     <Typography variant="h5" component="h5" sx={{mb: 2}}>
                         Prompt
                     </Typography>
-                    <IconButton onClick={onApiKeyClick} sx={{justifySelf: 'flex-end', marginLeft: 'auto'}}>
-                        {isKeyLocked ? lock : lockOpen}
-                    </IconButton>
+                    {IS_NEED_AUTH && (
+                        <IconButton onClick={onApiKeyClick} sx={{justifySelf: 'flex-end', marginLeft: 'auto'}}>
+                            {isKeyLocked ? lock : lockOpen}
+                        </IconButton>
+                    )}
                 </Box>
                 {/* The rest of your component */}
                 <Dialog open={showAPIKeyDialog} onClose={onApiKeyClick}>
@@ -280,6 +308,10 @@ function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boo
 }
 
 export default function App() {
+    const [key, setKey] = useState(Math.random());
+    useEffect(() => {
+        setKey(Math.random());
+    }, []);
     const isMobile = useMediaQuery('(max-width:600px)');
     const [result, setResult] = useState<AudioCardProps[]>([]);
     const animationProps = useSpring({
@@ -297,7 +329,7 @@ export default function App() {
     const direction = result.length > 0 ? 'row' : 'column';
     const align = result.length > 0 ? "flex-start" : "center";
     return (
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" key={key}>
             <Box sx={{my: 4}}>
                 <Typography variant="h4" component="h1" sx={{mb: 2}}>
                     NovelAI
