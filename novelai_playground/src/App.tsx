@@ -63,8 +63,8 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
 
     const handleClose = (_event: React.SyntheticEvent | Event, reason: string) => {
         if (reason === 'clickaway') {
+            setOpen(false);
             return;
-            // 当用户点击 Snackbar 外部时，不做任何操作
         }
         setOpen(false);
     };
