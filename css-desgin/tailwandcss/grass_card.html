@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Css 玻璃拟态卡 Tailwandcss</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/tailwind.min.css">
+</head>
+
+<body class="bg-slate-600">
+  <style>
+    .bg-opacity-25 {
+      background-color: rgba(255, 255, 255, 0.25);
+    }
+    @define card as .transform.hover\:scale-98.transition-transform.duration-300.ease-in-out.bg-white.bg-opacity-25.hover\:bg-opacity-40.shadow-lg.rounded-lg.p-6.m-5;
+  </style>
+  <div
+    class="transform hover:scale-98 transition-transform duration-300 ease-in-out bg-white bg-opacity-25 hover:bg-opacity-40 shadow-lg rounded-lg p-6 m-5">
+    <h2 class="text-2xl text-white font-bold mb-2">标题</h2>
+    <p class="text-base text-white">这是一些文本。</p>
+  </div>
+  <div
+    class="transform hover:scale-98 transition-transform duration-300 ease-in-out bg-white bg-opacity-25 hover:bg-opacity-40 shadow-lg rounded-lg p-6 m-5">
+    <h2 class="text-2xl text-white font-bold mb-2">标题</h2>
+    <p class="text-base text-white">这是一些文本。</p>
+  </div>
+  <div class="card">
+    <h2 class="text-2xl text-white font-bold mb-2">标题</h2>
+    <p class="text-base text-white">这是一些文本。</p>
+  </div>
+  <!-- define unocss options... -->
+  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime/uno.global.js"></script>
+</body>
+
+</html>
