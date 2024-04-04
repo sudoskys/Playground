@@ -245,7 +245,7 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
                 <Button variant="contained"
                         sx={{mt: 2}}
                         onClick={generateVoice}
-                        disabled={!apiKey || isLoading}
+                        disabled={isLoading || (IS_NEED_AUTH && !apiKey)}
                 >
                     Generate
                 </Button>
