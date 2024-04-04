@@ -158,7 +158,7 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
             const blob = new Blob([buffer], {type: 'audio/mp3'});
             const url = URL.createObjectURL(blob);
             setResult(oldArray => [...oldArray, buildAudioData(prompt, url ?? "Invalid audio data", seed ?? "No seed generated")]);
-            generateRandomSeed();
+            // generateRandomSeed();
         } catch (error) {
             if (error instanceof Error) {
                 handleError(`Error generating voice: ${error.message}`);
