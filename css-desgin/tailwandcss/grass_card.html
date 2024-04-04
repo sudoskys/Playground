@@ -9,21 +9,55 @@
 </head>
 
 <body class="bg-slate-600">
+  <style>
+    shortcuts: {
+      // shortcuts to multiple utilities
+      'btn': 'py-2 px-4 font-semibold rounded-lg shadow-md',
+        'btn-green': 'text-white bg-green-500 hover:bg-green-700',
+        // single utility alias
+        'red': 'text-red-100',
+    }
+  </style>
   <div
-    class="transform hover:scale-98 transition-transform duration-300 ease-in-out bg-white bg-opacity-25 hover:bg-opacity-40 shadow-lg rounded-lg p-6 m-5">
+    class="card">
     <h2 class="text-2xl text-white font-bold mb-2">标题</h2>
     <p class="text-base text-white">这是一些文本。</p>
   </div>
   <div
-    class="transform hover:scale-98 transition-transform duration-300 ease-in-out bg-white bg-opacity-25 hover:bg-opacity-40 shadow-lg rounded-lg p-6 m-5">
+    class="card">
     <h2 class="text-2xl text-white font-bold mb-2">标题</h2>
     <p class="text-base text-white">这是一些文本。</p>
   </div>
-  <div class="transform hover:scale-98 transition-transform duration-300 ease-in-out bg-white bg-opacity-25 hover:bg-opacity-40 shadow-lg rounded-lg p-6 m-5">
+  <div
+    class="card">
     <h2 class="text-2xl text-white font-bold mb-2">标题</h2>
     <p class="text-base text-white">这是一些文本。</p>
   </div>
-  <!-- define unocss options... -->
+  <div class="card">
+    <h2 class="text-2xl text-white font-bold mb-2">标题</h2>
+    <p class="text-base text-white">这是一些文本。</p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime/preset-icons.global.js"></script>
+  <script>
+    window.__unocss = {
+      /*
+      presets: [
+        () => window.__unocss_runtime.presets.presetIcons({
+          scale: 1.2,
+          cdn: 'https://esm.sh/'
+        }),
+      ],
+      */
+      shortcuts: [
+        // you could still have object style
+        {
+          card: 'transform hover:scale-98 transition-transform duration-300 ease-in-out bg-white bg-opacity-25 hover:bg-opacity-40 shadow-lg rounded-lg p-6 m-5',
+        },
+        // dynamic shortcuts
+        [/^btn-(.*)$/, ([, c]) => `bg-${c}-400 text-${c}-100 py-2 px-4 rounded-lg`],
+      ]
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime/uno.global.js"></script>
 </body>
 
