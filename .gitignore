@@ -137,3 +137,9 @@ dmypy.json
 /**/**/output/**
 
 /**/**/*.zip
+react_playground/.next/*
+react_playground/node_modules/*
+react_playground/bun.lockb
+ts-train/node_modules/*
+**/node_modules
+

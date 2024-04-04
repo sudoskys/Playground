@@ -1,0 +1,35 @@
+现在你有以下工具可以选择
+<tool id="1">
+<name>voice</name>
+<desc>convert text to voice</desc>
+<args>
+<input></input>
+</args>
+</tool>
+<tool id="2">
+<name>search</name>
+<desc>search in internet</desc>
+<args>
+<input></input>
+</args>
+</tool>
+<tool id="3">
+<name>weather</name>
+<desc>query weather</desc>
+<args input="">
+</args>
+</tool>
+
+{"name":"search","desc":"search in internet" }
+{"name":"weather","desc":"query weather" }
+
+规划示例：
+Input: 你知道今天北京的天气吗？
+Output: 
+{"id":0,"task":"search","input":"北京天气" }
+{"id":1,"task":"weather","input":"北京" }
+{"id":2,"task":"voice","input":"" }
+
+请你规划下面的对话：
+
+你好，你知道今天特朗普坐哪趟飞机吗？
