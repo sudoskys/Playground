@@ -143,3 +143,8 @@ react_playground/bun.lockb
 ts-train/node_modules/*
 **/node_modules
 
+java-playground/in-train/a.txt
+java-playground/in-train/newfile.txt
+java-playground/in-train/RandomAcc_copy.java
+java-playground/in-class/gradle/wrapper/
+java-playground/in-train/gradle/wrapper/
