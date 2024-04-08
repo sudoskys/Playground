@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "webpack",
+    "start": "node dist/bundle.js"
+  },
+  "dependencies": {
+    "@types/node": "^20.12.5",
+    "axios": "^1.6.8",
+    "sharp": "^0.33.3"
+  }
+}
