@@ -142,7 +142,7 @@ class YOUClass {
 }
   
 const inst1 = new YOUClass();
-inst1 instanceof MyClass // true
+inst1 instanceof YOUClass // true
 inst1.count // 1
 
 console.log(Reflect.get(inst1, 'count')); //输出：1
