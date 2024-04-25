@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tab 切换 Dom操作</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/tailwind.min.css">
+</head>
+<body>
+<div id="tab" class="mx-auto">
+    <div class="flex flex-col">
+        <div class="h-1/4 flex flex-row justify-around">
+            <div class="p-2 bg-green-200 cursor-pointer w-full" onclick="changeTab(0)">Tab1</div>
+            <div class="p-2 bg-red-200 cursor-pointer w-full" onclick="changeTab(1)">Tab2</div>
+            <div class="p-2 bg-blue-200 cursor-pointer w-full" onclick="changeTab(2)">Tab3</div>
+        </div>
+        <div class="h-3/4">
+            <div class="tab-content bg-green-200 h-3rem p-2" id="tab-content-0">Tab1 Content</div>
+            <div class="tab-content hidden bg-red-200 h-3rem p-2" id="tab-content-1">Tab2 Content</div>
+            <div class="tab-content hidden bg-blue-200 h-3rem p-2" id="tab-content-2">Tab3 Content</div>
+        </div>
+    </div>
+    <!--密码的显示与隐藏切换，使用 ICON-->
+    <div class="flex ma-4">
+        <label for="password">
+            <img src="https://img.icons8.com/material-outlined/24/000000/visible.png" id = "password-show"/>
+            <img src="https://img.icons8.com/material-outlined/24/000000/invisible.png" id = "password-hide" class="hidden"/>
+        </label>      
+        <input type="password" class="border border-blue-300 rounded-lg w-1/4" id="password">
+        <button class="border border-blue-300 rounded-lg w-1/4" onclick="togglePassword()" id="togglePassword">显示密码</button>
+    </div>
+</div>
+
+<script>
+    function changeTab(index) {
+        let tabContents = document.getElementsByClassName('tab-content');
+        for (let i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.add('hidden');
+        }
+        document.getElementById('tab-content-' + index).classList.remove('hidden');
+    }
+    function togglePassword() {
+        let password = document.getElementById('password');
+        let passwordShow = document.getElementById('password-show');
+        let passwordHide = document.getElementById('password-hide');
+        let passwordToggle = document.getElementById('togglePassword');
+        if (password.type === 'password') {
+            password.type = 'text';
+            passwordShow.classList.add('hidden');
+            passwordHide.classList.remove('hidden');
+            passwordToggle.innerText = '隐藏';
+
+        } else {
+            password.type = 'password';
+            passwordShow.classList.remove('hidden');
+            passwordHide.classList.add('hidden');
+            passwordToggle.innerText = '显示';
+        }
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@unocss/runtime/uno.global.js"></script>
+</body>
+</html>
