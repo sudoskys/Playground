@@ -21,9 +21,14 @@ package week04;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+class SharedFlag {
+    public volatile int flag = 0;
+}
+
 class Producer extends Thread {
     private LinkedBlockingQueue<Integer> queue;
     private int num;
+    private SharedFlag sharedFlag;
 
     public Producer(LinkedBlockingQueue<Integer> queue) {
         this.queue = queue;
@@ -47,6 +52,7 @@ class Producer extends Thread {
 
 class Consumer extends Thread {
     private LinkedBlockingQueue<Integer> queue;
+    private SharedFlag sharedFlag;
 
     public Consumer(LinkedBlockingQueue<Integer> queue) {
         this.queue = queue;
@@ -75,5 +81,12 @@ public class ThreadObstruct {
         Consumer consumer = new Consumer(queue);
         producer.start();
         consumer.start();
+        // 主线程等待子线程结束
+        try {
+            producer.join();
+            consumer.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
