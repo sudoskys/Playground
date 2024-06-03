@@ -1,9 +1,9 @@
 function delay(milliseconds: number): Promise<void> {
     return new Promise((resolve) => {
-      setTimeout(resolve, milliseconds);
+        setTimeout(resolve, milliseconds);
     });
 }
-  
+
 delay(1000).then(() => {
     console.log('Delayed 1 second');
 });

@@ -27,29 +27,29 @@ enum Color {
     Red,     // 0
     Green,   // 1
     Blue     // 2
-  }
+}
 
-  
+
 // a 的类型被推断为 (number | boolean)[]
 let b = [1, true];
 //上面示例中，变量a的值其实是一个元组，但是 TypeScript 会将其推断为一个联合类型的数组，即a的类型为(number | boolean)[]。所以，元组必须显式给出类型声明。
 //元组成员的类型可以添加问号后缀（?），表示该成员是可选的。
-let a:[number, number?] = [1];
+let a: [number, number?] = [1];
 
 type Tuple = [string, number, Date];
 type TupleEl = Tuple[number];  // string|number|Date
 // 上面示例中，Tuple[number]表示元组Tuple的所有数值索引的成员类型，所以返回string|number|Date，即这个类型是三种值的联合类型。
 
 type t = readonly [number, string]
-type T = 'a'|'b'|'c';
+type T = 'a' | 'b' | 'c';
 let foo = 'a';
 
 // let bar:T = foo; // 报错
-let bar2:T = foo as T; // 正确
+let bar2: T = foo as T; // 正确
 
 // 交叉类型
-const p0:{ x: number } =
-  { x: 0, y: 0 } as { x: number };
+const p0: { x: number } =
+    {x: 0, y: 0} as { x: number };
 
 //  import { type A, a } from './a';
 
@@ -65,23 +65,27 @@ let c: Color = Color.Green;
 
 // 4. 函数类型
 function add(x: number, y: number): number {
-  return x + y;
+    return x + y;
 }
 
 // 5. 接口
 interface Rect {
-  width: number;
-  height: number;
+    width: number;
+    height: number;
 }
-let rect: Rect = { width: 100, height: 50 };
+
+let rect: Rect = {width: 100, height: 50};
 
 // 6. 类
 class Person {
-  constructor(public name: string, private age: number) {}
-  introduce(): string {
-    return `Hello, my name is ${this.name}, I'm ${this.age} years old.`;
-  }
+    constructor(public name: string, private age: number) {
+    }
+
+    introduce(): string {
+        return `Hello, my name is ${this.name}, I'm ${this.age} years old.`;
+    }
 }
+
 let jordan = new Person("Jordan", 42);
 
 
@@ -95,7 +99,7 @@ interface Config {
     width?: number;  // 可选属性
 }
 
-const config: Config = { height: 100 };
+const config: Config = {height: 100};
 
 // 2. 非空断言 (x!)
 function printLength(str: string | undefined | null) {
@@ -122,25 +126,25 @@ function outerFunction(outVar: string) {
 let newFunction = outerFunction("outside");
 newFunction("inside"); // 输出: outside, inside
 
-function countInstances(value:any, context:any) {
+function countInstances(value: any, context: any) {
     let instanceCount = 0;
-  
-    const wrapper = function (...args:any[]) {
-      instanceCount++;
-      const instance = new value(...args);
-      instance.count = instanceCount;
-      return instance;
+
+    const wrapper = function (...args: any[]) {
+        instanceCount++;
+        const instance = new value(...args);
+        instance.count = instanceCount;
+        return instance;
     } as unknown as typeof YOUClass;
-  
+
     wrapper.prototype = value.prototype; // A
     return wrapper;
-  }
-  
+}
+
 @countInstances
 class YOUClass {
     count?: number;
 }
-  
+
 const inst1 = new YOUClass();
 inst1 instanceof YOUClass // true
 inst1.count // 1

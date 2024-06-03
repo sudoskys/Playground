@@ -13,12 +13,9 @@ public class TCPClient {
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
             out.println("Hello, Server!");
-
             String serverResponse = in.readLine();
             System.out.println("Received message from server: " + serverResponse);
-
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();

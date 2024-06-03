@@ -1,5 +1,5 @@
+import {md5} from 'hash-wasm';
 
-import { md5 } from 'hash-wasm';
 // Base64
 function base64Encode<T extends string | number>(data: T): string {
     return btoa(data.toString());
@@ -17,11 +17,11 @@ let lines = `121
 123`;
 
 md5(lines).then((hash) => {
-  console.log(`MD5 Result ${hash}`);
-  globalHash = hash;
+    console.log(`MD5 Result ${hash}`);
+    globalHash = hash;
 }).then(() => {
-  // 在这里，globalHash 已经被赋值，所以你可以使用它
-  console.log(`Global hash: ${globalHash}`);
+    // 在这里，globalHash 已经被赋值，所以你可以使用它
+    console.log(`Global hash: ${globalHash}`);
 });
 /*在 `then` 方法的回调函数中返回一个值是有用的。这个值会被用作下一个 `then` 方法的输入。也就是说，你可以在一个 `then` 方法的回调函数中返回一个值，然后在下一个 `then` 方法的回调函数中使用这个值。
  */
