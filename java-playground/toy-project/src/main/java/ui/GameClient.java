@@ -28,7 +28,7 @@ public class GameClient {
     // 存储密码框对象
     private JTable userTable;
     // 表格
-    private UserDAO userDAO;
+    private final UserDAO userDAO;
     private User loggedInUser = null;
     private UserTableModel userTableModel;
 
@@ -88,7 +88,7 @@ public class GameClient {
         int fieldFontSize = 16;
 
         JLabel usernameLabel = new JLabel("用户名:");
-        usernameLabel.setFont(getFallbackFont(true, labelFontSize)); // 自定义字体
+        usernameLabel.setFont(getFallbackFont(true, labelFontSize));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -355,6 +355,7 @@ public class GameClient {
             int selectedRow = userTable.getSelectedRow();
             if (selectedRow != -1) {
                 int id = (int) userTableModel.getValueAt(selectedRow, 0);
+
                 User user = userTableModel.getUserAt(selectedRow);
                 showEditDialog(user);
             }
@@ -405,7 +406,7 @@ public class GameClient {
     private void showEditDialog(User user) {
         JDialog editDialog = new JDialog(frame, "修改用户", true);
         editDialog.setSize(400, 300); // 调整窗口大小以适应更高分辨率
-
+        editDialog.setLocationRelativeTo(frame); // 居中显示
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10); // 设置内边距
