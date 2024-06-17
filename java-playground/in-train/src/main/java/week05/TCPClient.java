@@ -10,7 +10,6 @@ public class TCPClient {
         try {
             Socket socket = new Socket("localhost", 9000);
             System.out.println("Connected to server...");
-
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out.println("Hello, Server!");

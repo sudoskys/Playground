@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>图片移动</title>
+    <meta charset="utf-8">
+    <style>
+        /* 外层div的样式 */
+        #outerDiv {
+            width: 500px;
+            height: 120px;
+            border: 2px solid red;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 图片的初始样式 */
+        #movingImage {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        /* 动画的关键帧 */
+        @keyframes moveImage {
+            0% {
+                left: 0;
+            }
+            50% {
+                left: calc(100% - 100px); /* 图片的宽度 */
+            }
+            100% {
+                left: 0;
+            }
+        }
+
+        /* 动画样式 */
+        .moving {
+            animation: moveImage 4s infinite;
+        }
+    </style>
+</head>
+<body>
+<button onclick="start()">开始</button>
+<button onclick="stop()">停止</button>
+<div id="outerDiv">
+    <img src="images/move.png" id="movingImage" width="100">
+</div>
+
+<script>
+    let movingImage = document.getElementById('movingImage');
+    function start() {
+        movingImage.classList.add('moving');
+    }
+
+    function stop() {
+        movingImage.classList.remove('moving');
+    }
+</script>
+</body>
+</html>
