@@ -22,6 +22,24 @@ dependencies {
     implementation("io.github.vincenzopalazzo:material-ui-swing:1.1.2")
 }
 
+// 兼容 Java 11
+sourceCompatibility = 11
+targetCompatibility = 11
+
+// 打包设置
+jar {
+    manifest {
+        attributes(
+                'Manifest-Version': '1.0',
+                'Main-Class': 'ui.GameClient'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 test {
     useJUnitPlatform()
 }

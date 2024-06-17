@@ -43,6 +43,11 @@ public class User {
         return score;
     }
 
+    /**
+     * 设置用户ID
+     *
+     * @param id 用户ID
+     */
     public void setId(int id) {
         this.id = id;
     }
