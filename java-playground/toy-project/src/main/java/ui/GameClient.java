@@ -361,8 +361,8 @@ public class GameClient {
         public void actionPerformed(ActionEvent e) {
             int selectedRow = userTable.getSelectedRow();
             if (selectedRow != -1) {
-                int id = (int) userTableModel.getValueAt(selectedRow, 0);
-
+                // int id = (int) userTableModel.getValueAt(selectedRow, 0);
+                // 留着
                 User user = userTableModel.getUserAt(selectedRow);
                 showEditDialog(user);
             }
@@ -377,7 +377,7 @@ public class GameClient {
         public void actionPerformed(ActionEvent e) {
             loggedInUser = null;
             UserDAO userDAO = new UserDAO();
-            if (!userDAO.testConnection()) {
+            if (userDAO.testConnectionFailed()) {
                 JOptionPane.showMessageDialog(null, "无法连接到数据库，请检查数据库配置");
                 System.exit(1);
             }
@@ -503,6 +503,7 @@ public class GameClient {
                 JOptionPane.showMessageDialog(editDialog, "更新用户信息时出错: " + ex.getMessage());
             }
         });
+
         buttonPanel.add(updateButton);
 
         JButton cancelButton = new JButton("取消");
@@ -547,7 +548,7 @@ public class GameClient {
         System.setProperty("sun.java2d.dpiaware", "false");
         // 测试数据库链接
         UserDAO userDAO = new UserDAO();
-        if (!userDAO.testConnection()) {
+        if (userDAO.testConnectionFailed()) {
             JOptionPane.showMessageDialog(null, "无法连接到数据库，请检查数据库配置");
             System.exit(1);
         }

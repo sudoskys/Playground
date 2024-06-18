@@ -139,13 +139,13 @@ public class UserDAO {
         return users;
     }
 
-    public boolean testConnection() {
+    public boolean testConnectionFailed() {
         try {
             Connection conn = ConnectionPool.getConnection();
-            return true;
+            return false;
         } catch (Exception e) {
             logger.warning("Failed to test connection: " + e.getMessage());
-            return false;
+            return true;
         }
     }
 }
