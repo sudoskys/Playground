@@ -1,4 +1,4 @@
-package dao;
+package service;
 
 import org.junit.jupiter.api.Test;
 import service.ConnectionPool;
