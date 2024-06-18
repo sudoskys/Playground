@@ -117,12 +117,7 @@ public class GameClient {
         passwordField = new JPasswordField();
         passwordField.setFont(getFallbackFont(false, fieldFontSize));
         // 回车键登录
-        passwordField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new LoginAction().actionPerformed(e);
-            }
-        });
+        passwordField.addActionListener(e -> new LoginAction().actionPerformed(e));
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
