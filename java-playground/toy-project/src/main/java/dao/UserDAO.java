@@ -1,5 +1,8 @@
 package dao;
 
+import entity.User;
+import service.ConnectionPool;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

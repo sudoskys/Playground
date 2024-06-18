@@ -1,6 +1,7 @@
 package dao;
 
 import org.junit.jupiter.api.Test;
+import service.ConnectionPool;
 
 import java.sql.Connection;
 

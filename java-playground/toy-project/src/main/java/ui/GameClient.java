@@ -1,6 +1,6 @@
 package ui;
 
-import dao.User;
+import entity.User;
 import dao.UserDAO;
 import mdlaf.MaterialLookAndFeel;
 
