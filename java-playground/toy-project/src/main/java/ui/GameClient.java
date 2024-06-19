@@ -31,9 +31,8 @@ public class GameClient {
     private final UserDAO userDAO;
     private User loggedInUser = null;
     private UserTableModel userTableModel;
-
+    // 日志记录器
     private static final Logger logger = Logger.getLogger(UserDAO.class.getName());
-
 
     public GameClient(UserDAO userDAO) {
         this.userDAO = userDAO;
@@ -100,6 +99,14 @@ public class GameClient {
 
         usernameField = new JTextField();
         usernameField.setFont(getFallbackFont(false, fieldFontSize));
+        // 回车键切换到密码输入框
+        usernameField.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    usernameField.transferFocus();
+                }
+            }
+        });
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -173,6 +180,14 @@ public class GameClient {
 
         JTextField regUsernameField = new JTextField();
         regUsernameField.setFont(getFallbackFont(false, fontSize));
+        // 回车键切换到密码输入框
+        regUsernameField.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    regUsernameField.transferFocus();
+                }
+            }
+        });
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
