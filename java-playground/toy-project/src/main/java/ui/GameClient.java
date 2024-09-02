@@ -31,6 +31,7 @@ public class GameClient {
     private final UserDAO userDAO;
     private User loggedInUser = null;
     private UserTableModel userTableModel;
+
     // 日志记录器
     private static final Logger logger = Logger.getLogger(UserDAO.class.getName());
 
