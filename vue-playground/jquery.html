@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>jQuery</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>jQuery</h1>
+<button id="btn">Click me</button>
+<p id="demo">Hello World!</p>
+<script>
+    $(document).ready(function () {
+        $("#btn").click(function () {
+            $("#demo").text("Hello jQuery!");
+        });
+    });
+    // 动画效果
+    $(document).ready(function () {
+        $("#btn").click(function () {
+            $("#demo").animate({fontSize: "30px"}, "slow", function () {
+                $("#demo").animate({fontSize: "16px"}, "slow").text("Hello World!");
+            });
+        });
+    });
+</script>
+</body>
+</html>
