@@ -15,6 +15,9 @@ dependencies {
     //testImplementation platform('org.junit:junit-bom:5.9.1')
     //testImplementation 'org.junit.jupiter:junit-jupiter'
     // https://mvnrepository.com/artifact/io.gitee.liuzhihai520/ZHConverter
+    // mysql
+    // implementation('mysql:mysql-connector-java:8.0.27')
+    // postgreSQL
     implementation('org.postgresql:postgresql:42.7.3')
     implementation('com.zaxxer:HikariCP:5.1.0')
     implementation("org.hibernate.orm:hibernate-core:6.5.2.Final")
@@ -29,10 +32,8 @@ targetCompatibility = 11
 // 打包设置
 jar {
     manifest {
-        attributes(
-                'Manifest-Version': '1.0',
-                'Main-Class': 'ui.GameClient'
-        )
+        attributes('Manifest-Version': '1.0',
+                'Main-Class': 'ui.GameClient')
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
