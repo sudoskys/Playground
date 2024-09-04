@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8"/>
     <title>jQuery 示例</title>
@@ -25,6 +25,11 @@
 <button id="btnAdd">添加段落</button>
 <button id="btnRemove">删除段落</button>
 <button id="btnAnimate">动画效果</button>
+<button id="btnFadeIn">淡入</button>
+<button id="btnFadeOut">淡出</button>
+<button id="btnSlideUp">滑上收起</button>
+<button id="btnSlideDown">滑下展开</button>
+<button id="btnChangeStyle">改变样式</button>
 <button id="btnAjax">加载外部内容</button>
 <button id="btnHitokoto">获取Hitokoto句子</button>
 
@@ -79,13 +84,41 @@
             $("#content").animate(
                 {
                     width: "toggle",
-                    opacity: "toggle",
+                    opacity: "toggle"
                 },
                 {
                     duration: duration,
                     easing: easing
                 }
             );
+        });
+
+        // 淡入效果
+        $("#btnFadeIn").click(function () {
+            $("#content").fadeIn("slow");
+        });
+
+        // 淡出效果
+        $("#btnFadeOut").click(function () {
+            $("#content").fadeOut("slow");
+        });
+
+        // 滑上收起效果
+        $("#btnSlideUp").click(function () {
+            $("#content").slideUp("slow");
+        });
+
+        // 滑下展开效果
+        $("#btnSlideDown").click(function () {
+            $("#content").slideDown("slow");
+        });
+
+        // 动态改变样式
+        $("#btnChangeStyle").click(function () {
+            $("#content").css({
+                "background-color": "#f0f8ff",
+                "border-color": "#888"
+            });
         });
 
         // 加载外部内容到元素中
