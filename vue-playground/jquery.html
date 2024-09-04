@@ -1,26 +1,122 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>jQuery</title>
+    <meta charset="UTF-8"/>
+    <title>jQuery 示例</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        #content {
+            width: 300px;
+            height: auto;
+            border: 1px solid #000;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .highlight {
+            background-color: yellow;
+        }
+    </style>
 </head>
 <body>
-<h1>jQuery</h1>
-<button id="btn">Click me</button>
-<p id="demo">Hello World!</p>
+<h1>jQuery 示例</h1>
+
+<button id="btnToggle">显示/隐藏内容</button>
+<button id="btnAdd">添加段落</button>
+<button id="btnRemove">删除段落</button>
+<button id="btnAnimate">动画效果</button>
+<button id="btnAjax">加载外部内容</button>
+<button id="btnHitokoto">获取Hitokoto句子</button>
+
+<!-- Input field and button for changing paragraph content -->
+<input type="text" id="inputText" placeholder="输入内容"/>
+<button id="btnChangeText">更改段落内容</button>
+
+<!-- New input options for animation -->
+<div id="animationOptions">
+    <label for="animationDuration">动画持续时间 (毫秒): </label>
+    <input type="text" id="animationDuration" value="1000"/>
+
+    <label for="animationEasing">动画缓动效果: </label>
+    <select id="animationEasing">
+        <option value="swing">swing</option>
+        <option value="linear">linear</option>
+    </select>
+</div>
+
+<div id="content">
+    <p id="demo">Hello World!</p>
+</div>
+
 <script>
     $(document).ready(function () {
-        $("#btn").click(function () {
-            $("#demo").text("Hello jQuery!");
+        // 更改段落内容
+        $("#btnChangeText").click(function () {
+            const inputValue = $("#inputText").val();
+            $("#demo").text(inputValue);
         });
-    });
-    // 动画效果
-    $(document).ready(function () {
-        $("#btn").click(function () {
-            $("#demo").animate({fontSize: "30px"}, "slow", function () {
-                $("#demo").animate({fontSize: "16px"}, "slow").text("Hello World!");
+
+        // 切换显示和隐藏
+        $("#btnToggle").click(function () {
+            $("#content").toggle("slow");
+        });
+
+        // 添加一个新的段落
+        $("#btnAdd").click(function () {
+            $("#content").append("<p>新增段落。</p>");
+        });
+
+        // 删除最后一个段落
+        $("#btnRemove").click(function () {
+            $("#content p:last").remove();
+        });
+
+        // 使用动画效果
+        $("#btnAnimate").click(function () {
+            const duration = parseInt($("#animationDuration").val(), 10) || 1000;
+            const easing = $("#animationEasing").val();
+
+            $("#content").animate(
+                {
+                    width: "toggle",
+                    opacity: "toggle",
+                },
+                {
+                    duration: duration,
+                    easing: easing
+                }
+            );
+        });
+
+        // 加载外部内容到元素中
+        $("#btnAjax").click(function () {
+            $("#content").load("https://example.com", function (response, status, xhr) {
+                if (status === "error") {
+                    $("#content").html("<p>加载失败，请稍后再试。</p>");
+                }
             });
+        });
+
+        // 从 hitokoto API 获取句子
+        $("#btnHitokoto").click(function () {
+            $.ajax({
+                url: "https://v1.hitokoto.cn/?encode=text",
+                method: "GET",
+                success: function (data) {
+                    $("#content").append("<p>Hitokoto: " + data + "</p>");
+                },
+                error: function () {
+                    $("#content").append("<p>无法获取句子，请稍后重试。</p>");
+                }
+            });
+        });
+
+        // 为段落添加点击高亮效果
+        $("#content").on("click", "p", function () {
+            $(this).toggleClass("highlight");
         });
     });
 </script>
+
 </body>
 </html>
