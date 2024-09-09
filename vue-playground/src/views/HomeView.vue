@@ -4,7 +4,7 @@ import HomePage from '@/components/HomePage.vue';
 
 <template>
   <div
-      class="bg-amber text-white p-4 rounded-lg fullscreen flex flex-col justify-center items-center"
+      class="bg-amber text-white p-4 w-full h-full flex flex-col justify-center items-center"
   >
   <HomePage>
     <template #nav="{ message }">
