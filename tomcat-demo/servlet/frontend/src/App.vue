@@ -4,8 +4,8 @@ import Login from "./components/Login.vue";
 
 <template>
   <Login />
-
 </template>
 
 <style scoped>
+
 </style>
