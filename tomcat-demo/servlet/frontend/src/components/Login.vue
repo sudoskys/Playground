@@ -109,11 +109,15 @@
           >
             <el-option
                 label="设计师"
-                value="admin"
+                value="designer"
             ></el-option>
             <el-option
                 label="用户"
                 value="user"
+            ></el-option>
+            <el-option
+                label="投资人"
+                value="investor"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -227,13 +231,13 @@ const login = async () => {
         password: password.value,
       }),
     })
-    const data = await response.text()
+    const {message} = await response.json()
     if (response.ok) {
       state.value = STATES.LOGGED_IN
       showNotification('Login successful')
       updateLoginStatus()
     } else {
-      showNotification(data, true)
+      showNotification(message, true)
     }
   } catch (error) {
     console.error('Error:', error)
@@ -253,11 +257,12 @@ const register = async () => {
         role: role.value,
       }),
     })
+    const {message} = await response.json()
     if (response.ok) {
       showNotification('Registration successful')
       state.value = STATES.LOGIN
     } else {
-      showNotification(response.statusText, true)
+      showNotification(message, true)
     }
   } catch (error) {
     console.error('Error:', error)
