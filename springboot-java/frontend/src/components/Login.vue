@@ -2,12 +2,11 @@
   <div class="flex justify-center mt-5">
     <!-- Login Card -->
     <el-card
-        class="p-7 w-100 mt-6 rounded-lg"
-        shadow="always"
+        class="p-7 w-100 mt-6 rounded-lg shadow-lg"
         v-if="state === STATES.LOGIN"
     >
       <div>
-        <el-text class="my-5 w-full text-3xl flex justify-center color-black">
+        <el-text class="my-5 w-full text-3xl flex justify-center text-primary">
           登录
         </el-text>
         <el-form @submit.prevent="login">
@@ -35,7 +34,6 @@
           <el-form-item>
             <el-button
                 type="primary"
-                color="#00A8E9"
                 native-type="submit"
                 style="width: 100%"
                 class="h-10 font-bold text-md"
@@ -59,11 +57,10 @@
 
     <!-- Register Card -->
     <el-card
-        class="p-7 w-100 mt-6 rounded-lg"
-        shadow="always"
+        class="p-7 w-100 mt-6 rounded-lg shadow-lg"
         v-if="state === STATES.REGISTER"
     >
-      <el-text class="my-5 w-full text-3xl flex justify-center color-black">
+      <el-text class="my-5 w-full text-3xl flex justify-center text-primary">
         注册
       </el-text>
       <el-form @submit.prevent="register">
@@ -126,7 +123,6 @@
         <el-form-item>
           <el-button
               type="primary"
-              color="#00A8E9"
               native-type="submit"
               style="width: 100%"
               class="h-10 font-bold text-md"
@@ -153,8 +149,7 @@
         class="flex justify-center mt-5"
     >
       <el-card
-          class="p-7 w-100 mt-6 rounded-lg"
-          shadow="always"
+          class="p-7 w-100 mt-6 rounded-lg shadow-lg"
       >
         <el-result
             icon="success"
@@ -164,7 +159,6 @@
           <template #extra>
             <el-button
                 type="primary"
-                color="#00A8E9"
                 style="width: 100%"
                 class="h-10 font-bold text-md"
                 @click="logout"
@@ -190,19 +184,18 @@
       :type="notification.isError ? 'error' : 'success'"
   ></el-notification>
 </template>
+
 <script setup lang="ts">
 import {ref, onMounted} from 'vue'
 import {ElNotification} from 'element-plus'
 
-// Define possible states
 const STATES = {
   LOGIN: 'login',
   REGISTER: 'register',
   LOGGED_IN: 'logged_in',
 } as const
-// TypeScript type for state
+
 type StateType = typeof STATES[keyof typeof STATES]
-// Use the specific type `StateType` for state
 const state = ref<StateType>(STATES.LOGIN)
 
 const username = ref('')
@@ -223,10 +216,10 @@ const showNotification = (message: string, isError = false) => {
 
 const login = async () => {
   try {
-    const response = await fetch('/api/login', {
+    const response = await fetch('/auth/login', {
       method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: new URLSearchParams({
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
         username: username.value,
         password: password.value,
       }),
@@ -247,10 +240,10 @@ const login = async () => {
 
 const register = async () => {
   try {
-    const response = await fetch('/api/register', {
+    const response = await fetch('/auth/register', {
       method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: new URLSearchParams({
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
         username: username.value,
         password: password.value,
         email: email.value,
@@ -330,7 +323,6 @@ onMounted(updateLoginStatus)
 </script>
 
 <style scoped>
-/* Optional styles */
 .flex {
   display: flex;
 }
@@ -341,5 +333,9 @@ onMounted(updateLoginStatus)
 
 .mt-5 {
   margin-top: 1.25rem;
+}
+
+.shadow-lg {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 </style>
