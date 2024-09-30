@@ -1,5 +1,6 @@
 package com.star.demo.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.demo.model.User;
 import com.star.demo.security.JwtUtil;
 import com.star.demo.service.UserService;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,18 +56,20 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody Map<String, String> loginRequest, HttpServletResponse response) {
+    public void login(@RequestBody Map<String, String> loginRequest, HttpServletResponse response) throws IOException, IOException {
         Map<String, String> responseBody = new HashMap<>();
         try {
             if (!loginRequest.containsKey("username") || !loginRequest.containsKey("password")) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 responseBody.put("message", "Username and password are required");
-                return responseBody;
+                response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
+                return;
             }
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             responseBody.put("message", "Invalid request body");
-            return responseBody;
+            response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
+            return;
         }
         String username = loginRequest.get("username");
         String password = loginRequest.get("password");
@@ -78,13 +82,13 @@ public class AuthController {
             cookie.setPath("/");
             response.addCookie(cookie);
             response.setStatus(HttpServletResponse.SC_OK);
-            responseBody.put("message", "Login successful");
+            response.sendRedirect("/api/status");
             logger.info("User logged in successfully: {}", username);
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             responseBody.put("message", "Invalid username or password");
+            response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
             logger.warn("Failed login attempt for username: {}", username);
         }
-        return responseBody;
     }
 }
