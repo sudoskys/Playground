@@ -2,42 +2,46 @@ package com.star.demo.model;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
 public class User {
+    public enum Role {
+        USER,
+        ADMIN
+    }
+    
     private Long id;
 
-    @NotBlank(message = "Username is mandatory")
-    @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
-    private String username;
-
-    @NotBlank(message = "Password is mandatory")
-    @Size(min = 6, message = "Password must be at least 6 characters")
+    @NotBlank(message = "密码不能为空")
+    @Size(min = 6, message = "密码长度至少为6个字符")
     private String password;
 
-    @Email(message = "Email should be valid")
-    @NotBlank(message = "Email is mandatory")
+    @Email(message = "请输入有效的邮箱地址")
+    @NotBlank(message = "邮箱不能为空")
     private String email;
 
-    private String address;
-    private String phone;
-    private String role;
+    @NotNull(message = "角色不能为空")
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;  // 默认角色为 USER
 
-    // Getters and Setters
+    // 构造函数
+    public User() {}
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    // Getter 和 Setter 方法
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
@@ -56,28 +60,11 @@ public class User {
         this.email = email;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }

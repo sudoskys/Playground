@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.http.ResponseEntity;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,17 +21,20 @@ public class StatusController {
     private JwtUtil jwtUtil;
 
     @GetMapping("/status")
-    public Map<String, String> getStatus(HttpServletRequest request) {
+    public ResponseEntity<?> getStatus(HttpServletRequest request) {
         Map<String, String> response = new HashMap<>();
-        String token = jwtUtil.extractTokenFromCookies(request);
+        String token = jwtUtil.extractTokenFromCookies(request).orElse(null);
+
         if (token != null && jwtUtil.validateToken(token)) {
+            Long username = jwtUtil.extractUserId(token);
             response.put("status", "valid");
-            response.put("username", jwtUtil.extractUsername(token));
-            logger.info("JWT is valid for user: {}", jwtUtil.extractUsername(token));
+            response.put("username", String.valueOf(username));
+            logger.info("JWT 有效，用户：{}", username);
+            return ResponseEntity.ok(response);
         } else {
             response.put("status", "invalid");
-            logger.warn("Invalid JWT");
+            logger.warn("无效的 JWT");
+            return ResponseEntity.ok(response);
         }
-        return response;
     }
 }

@@ -2,18 +2,20 @@ package com.star.demo.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Cookie;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.util.Collections;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
+
+import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtil {
@@ -21,41 +23,80 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String extractTokenFromCookies(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("token".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
+    @Value("${jwt.expiration}")
+    private long jwtExpirationInSeconds;
+
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String generateToken(String email, Long userId, String role) {
+        Instant now = Instant.now();
+        return Jwts.builder()
+                .subject(email)
+                .claim("userId", userId)
+                .claim("role", role)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusSeconds(jwtExpirationInSeconds)))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public Optional<String> extractTokenFromCookies(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return Optional.empty();
         }
-        return null;
+        return Optional.ofNullable(
+                request.getCookies())
+                .flatMap(cookies -> 
+                    java.util.Arrays.stream(cookies)
+                        .filter(cookie -> "token".equals(cookie.getName()))
+                        .findFirst()
+                        .map(Cookie::getValue)
+                );
     }
 
-    public String generateToken(String username) {
-        return Jwts.builder().setSubject(username).setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)).signWith(SignatureAlgorithm.HS256, secret).compact();
+    public Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
-    public Claims extractClaims(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    public String extractEmail(String token) {
+        return extractAllClaims(token).getSubject();
     }
 
-    public String extractUsername(String token) {
-        return extractClaims(token).getSubject();
+    public Long extractUserId(String token) {
+        return extractAllClaims(token).get("userId", Long.class);
+    }
+
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
     }
 
     public boolean isTokenExpired(String token) {
-        return extractClaims(token).getExpiration().before(new Date());
+        return extractAllClaims(token).getExpiration().before(Date.from(Instant.now()));
     }
 
     public boolean validateToken(String token) {
-        return !isTokenExpired(token);
+        try {
+            Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public UsernamePasswordAuthenticationToken getAuthentication(String token) {
-        String username = extractUsername(token);
-        UserDetails userDetails = new User(username, "", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+        Claims claims = extractAllClaims(token);
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                .username(claims.getSubject())
+                .password("")
+                .authorities(new SimpleGrantedAuthority("ROLE_" + claims.get("role", String.class)))
+                .build();
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }

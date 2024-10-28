@@ -1,94 +1,106 @@
 package com.star.demo.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.demo.model.User;
 import com.star.demo.security.JwtUtil;
 import com.star.demo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import jakarta.servlet.http.Cookie;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.star.demo.common.ApiResponse;
+import com.star.demo.dto.request.LoginRequest;
+import com.star.demo.dto.response.AuthResponse;
+import com.star.demo.dto.response.UserResponse;
+
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+@Slf4j
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
-    public Map<String, String> register(@Valid @RequestBody User user, BindingResult bindingResult) {
-        Map<String, String> response = new HashMap<>();
-        try {
-            if (bindingResult.hasErrors()) {
-                for (FieldError error : bindingResult.getFieldErrors()) {
-                    logger.warn("Validation error on field {}: {}", error.getField(), error.getDefaultMessage());
-                    response.put(error.getField(), error.getDefaultMessage());
-                }
-                return response;
-            }
-            userService.registerUser(user.getUsername(), user.getPassword(), user.getEmail(), user.getRole());
-            response.put("message", "User registered successfully");
-            logger.info("User registered successfully: {}", user.getUsername());
-        } catch (Exception e) {
-            logger.error("An error occurred during registration", e);
-            response.put("message", "An error occurred during registration");
-        }
-        return response;
+    public ApiResponse<AuthResponse> register(@Valid @RequestBody User user) {
+        log.info("收到注册请求：{}", user.getEmail());
+        User registeredUser = userService.registerUser(user.getEmail(), user.getPassword());
+        String token = jwtUtil.generateToken(
+            registeredUser.getEmail(), 
+            registeredUser.getId(), 
+            registeredUser.getRole().toString()
+        );
+        
+        return ApiResponse.success(AuthResponse.builder()
+            .token(token)
+            .user(UserResponse.fromUser(registeredUser))
+            .build());
     }
 
     @PostMapping("/login")
-    public void login(@RequestBody Map<String, String> loginRequest, HttpServletResponse response) throws IOException, IOException {
-        Map<String, String> responseBody = new HashMap<>();
-        try {
-            if (!loginRequest.containsKey("username") || !loginRequest.containsKey("password")) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                responseBody.put("message", "Username and password are required");
-                response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
-                return;
-            }
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            responseBody.put("message", "Invalid request body");
-            response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
-            return;
-        }
-        String username = loginRequest.get("username");
-        String password = loginRequest.get("password");
+    public ApiResponse<AuthResponse> login(
+            @Valid @RequestBody LoginRequest loginRequest, 
+            HttpServletResponse response) {
+        log.info("收到登录请求：{}", loginRequest.getEmail());
+        
+        User user = userService.authenticateUser(
+            loginRequest.getEmail(), 
+            loginRequest.getPassword()
+        );
+        
+        String token = jwtUtil.generateToken(
+            user.getEmail(), 
+            user.getId(), 
+            user.getRole().toString()
+        );
 
-        User user = userService.findByUsername(username);
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            String token = jwtUtil.generateToken(username);
-            Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.sendRedirect("/api/status");
-            logger.info("User logged in successfully: {}", username);
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            responseBody.put("message", "Invalid username or password");
-            response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
-            logger.warn("Failed login attempt for username: {}", username);
-        }
+        // 设置cookie
+        Cookie cookie = new Cookie("token", token);
+        cookie.setDomain("localhost");
+        cookie.setPath("/");
+        cookie.setHttpOnly(false);
+        cookie.setAttribute("SameSite", "Lax");
+        response.addCookie(cookie);
+
+        return ApiResponse.success(AuthResponse.builder()
+            .token(token)
+            .user(UserResponse.fromUser(user))
+            .build());
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout() {
+        return ApiResponse.success(null);
+    }
+
+    @GetMapping("/user")
+    public ApiResponse<UserResponse> getCurrentUser(
+            @RequestHeader("Authorization") String token) {
+        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
+        User user = userService.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("用户不存在"));
+        
+        return ApiResponse.success(UserResponse.fromUser(user));
+    }
+
+    @PostMapping("/ping")
+    public ApiResponse<AuthResponse> ping(
+            @RequestHeader("Authorization") String token) {
+        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
+        User user = userService.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("用户不存在"));
+        
+        String newToken = jwtUtil.generateToken(
+            email, 
+            user.getId(), 
+            user.getRole().toString()
+        );
+        
+        return ApiResponse.success(AuthResponse.builder()
+            .token(newToken)
+            .user(UserResponse.fromUser(user))
+            .build());
     }
 }
