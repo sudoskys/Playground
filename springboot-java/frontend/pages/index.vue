@@ -1,33 +1,6 @@
-<template>
-  <div class="container mx-auto p-4">
-    <!-- 页面标题 -->
-    <Container>
-      <h1 class="text-2xl font-bold mb-6">热门商品</h1>
-      <!-- 商品网格 -->
-      <Grid :cols="{ base: 1, sm: 2, md: 3, lg: 4 }" gap="4">
-        <Card v-for="product in products" :key="product.id">
-          <template #header>
-            <img :src="product.image" :alt="product.name" class="w-full h-48 object-cover">
-          </template>
-          <h3 class="font-bold text-lg">{{ product.name }}</h3>
-          <p class="text-gray-600 mt-2">{{ product.description }}</p>
-
-          <template #footer>
-            <div class="flex justify-between items-center">
-              <span class="text-primary text-xl font-bold">¥{{ product.price }}</span>
-              <Button color="primary">
-                加入购物车
-              </Button>
-            </div>
-          </template>
-        </Card>
-      </Grid>
-    </Container>
-  </div>
-</template>
-
-<script setup>
-import {Card} from "~/components/ui/card/index.js"
+<script setup lang="ts">
+import {ref} from 'vue'
+import {Card} from '~/components/ui/card/'
 
 const products = ref([
   {
@@ -60,3 +33,36 @@ const products = ref([
   }
 ])
 </script>
+
+<template>
+  <div class="container mx-auto p-4">
+    <!-- 页面标题 -->
+    <h1 class="m-4 text-2xl font-bold mb-6">热门商品</h1>
+    <!-- 商品网格 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div v-for="product in products" :key="product.id" class="card">
+        <Card>
+          <CardHeader>
+            <h2 class="font-bold text-xl">{{ product.name }}</h2>
+          </CardHeader>
+          <CardContent>
+            <p class="text-gray-600">{{ product.description }}</p>
+          </CardContent>
+          <CardFooter>
+            <div class="flex w-full justify-between items-center flex-row">
+              <span class="text-primary text-xl font-bold">¥{{ product.price }}</span>
+              <Button color="primary">
+                加入购物车
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+    </div>
+  </div>
+</template>
+
+
+<style scoped>
+
+</style>
