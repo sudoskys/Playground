@@ -1,16 +1,45 @@
 <script setup lang="ts">
 import { Loader2 } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
-
+import { register } from '@/lib/api'
+import { useToast } from '@/components/ui/toast'
+import { GitHubIcon } from 'vue3-simple-icons'
+const { toast } = useToast()
+const userStore = useUserStore()
 const isLoading = ref(false)
+const form = ref({
+  email: '',
+  password: '',
+})
+
 async function onSubmit(event: Event) {
   event.preventDefault()
   isLoading.value = true
-
-  setTimeout(() => {
+  
+  try {
+    const response = await register(form.value.email, form.value.password)
+    toast({
+      title: '注册成功',
+      variant: 'default',
+    })
+    userStore.setAuthResponse(response)
+    // 触发注册成功事件
+    emit('register-success')
+  }
+  catch (error: any) {
+    console.error(error)
+    toast({
+      title: '注册失败',
+      description: error.message,
+      variant: 'destructive',
+    })
+  }
+  finally {
     isLoading.value = false
-  }, 3000)
+  }
 }
+
+const emit = defineEmits(['register-success'])
 </script>
 
 <template>
@@ -18,11 +47,10 @@ async function onSubmit(event: Event) {
     <form @submit="onSubmit">
       <div class="grid gap-4">
         <div class="grid gap-2">
-          <Label for="email">
-            Email
-          </Label>
+          <Label for="email">Email</Label>
           <Input
             id="email"
+            v-model="form.email"
             placeholder="name@example.com"
             type="email"
             auto-capitalize="none"
@@ -31,9 +59,19 @@ async function onSubmit(event: Event) {
             :disabled="isLoading"
           />
         </div>
+        <div class="grid gap-2">
+          <Label for="password">密码</Label>
+          <Input
+            id="password"
+            v-model="form.password"
+            type="password"
+            auto-complete="current-password"
+            :disabled="isLoading"
+          />
+        </div>
         <Button :disabled="isLoading">
           <Loader2 v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
-          Sign In with Email
+          注册
         </Button>
       </div>
     </form>
@@ -43,14 +81,14 @@ async function onSubmit(event: Event) {
       </div>
       <div class="relative flex justify-center text-xs uppercase">
         <span class="bg-background px-2 text-muted-foreground">
-          Or continue with
+          或者使用
         </span>
       </div>
     </div>
     <Button variant="outline" type="button" :disabled="isLoading">
       <Loader2 v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
-      <div v-else class="i-radix-icons-github-logo mr-2 h-4 w-4" />
-      GitHub
+      <GitHubIcon v-else class="mr-2 w-4 h-4"/>
+      使用GitHub账号登录
     </Button>
   </div>
 </template>

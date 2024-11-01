@@ -2,6 +2,8 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
+    '@pinia/nuxt',
+    '@unocss/nuxt',
     '@nuxt/content',
     '@nuxtjs/tailwindcss',
     'shadcn-nuxt'
@@ -22,4 +24,5 @@ export default defineNuxtConfig({
       './lib',
     ],
   },
+  compatibilityDate: '2024-10-31',
 })

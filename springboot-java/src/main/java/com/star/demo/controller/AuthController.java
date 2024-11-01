@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Slf4j
@@ -56,14 +55,6 @@ public class AuthController {
             user.getRole().toString()
         );
 
-        // 设置cookie
-        Cookie cookie = new Cookie("token", token);
-        cookie.setDomain("localhost");
-        cookie.setPath("/");
-        cookie.setHttpOnly(false);
-        cookie.setAttribute("SameSite", "Lax");
-        response.addCookie(cookie);
-
         return ApiResponse.success(AuthResponse.builder()
             .token(token)
             .user(UserResponse.fromUser(user))
@@ -84,7 +75,11 @@ public class AuthController {
         
         return ApiResponse.success(UserResponse.fromUser(user));
     }
-
+    /**
+     * 续签 Token
+     * @param token
+     * @return
+     */
     @PostMapping("/ping")
     public ApiResponse<AuthResponse> ping(
             @RequestHeader("Authorization") String token) {

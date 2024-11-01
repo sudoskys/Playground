@@ -24,14 +24,16 @@ const api = axios.create({
   },
 })
 
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = localStorage.getItem('token')
-  if (token) {
-    config.headers = config.headers ?? {}
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
+const authResponseSchema = z.object({
+  token: z.string(),
+  user: z.object({
+    id: z.number(),
+    email: z.string(),
+    role: z.string(),
+  }),
 })
+
+export type AuthResponse = z.infer<typeof authResponseSchema>
 
 // 创建一个函数来更新 baseURL
 export function updateApiBaseUrl() {
@@ -70,22 +72,64 @@ async function apiCall<T>(
     throw new ApiError(500, '', undefined, caller)
   }
 }
+
+// 自动添加 token 到请求头
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  if (import.meta.client) {
+    const token = sessionStorage.getItem('access_token')
+    if (token) {
+      config.headers = config.headers ?? {}
+      config.headers.Authorization = `Bearer ${token}`
+    }
+  }
+  return config
+})
+
+// 添加响应拦截器处理 token 过期
+api.interceptors.response.use(
+  response => response,
+  async error => {
+    const originalRequest = error.config
+    
+    // 如果是 401 错误且不是刷新 token 的请求
+    if (error.response?.status === 401 && 
+        !originalRequest._retry &&
+        originalRequest.url !== '/auth/ping') {
+      originalRequest._retry = true
+
+      const userStore = useUserStore()
+      const refreshed = await userStore.refreshToken()
+      
+      if (refreshed) {
+        originalRequest.headers.Authorization = `Bearer ${userStore.token}`
+        return api(originalRequest)
+      }
+    }
+    
+    return Promise.reject(error)
+  }
+)
+
 export function login(email: string, password: string) {
-  return apiCall('post', '/auth/login', { email, password }, z.object({
-    token: z.string(),
-    user: z.object({
-      id: z.number(),
-      email: z.string(),
-      role: z.string(),
-    }),
-  }), undefined, 'login')
+  return apiCall<AuthResponse>(
+    'post',
+    '/auth/login',
+    { email, password },
+    authResponseSchema,
+    undefined,
+    'login'
+  )
 }
 
 export function register(email: string, password: string) {
-  return apiCall('post', '/auth/register', { email, password }, z.object({
-    token: z.string(),
-    message: z.string(),
-  }), undefined, 'register')
+  return apiCall<AuthResponse>(
+    'post',
+    '/auth/register',
+    { email, password },
+    authResponseSchema,
+    undefined,
+    'register'
+  )
 }
 
 export function logout() {
@@ -102,11 +146,19 @@ export function getCurrentUser() {
   }), undefined, 'getCurrentUser')
 }
 
+/**
+ * 刷新 token
+ * @returns 
+ */
 export function ping() {
-  return apiCall('post', '/auth/ping', undefined, z.object({
-    message: z.string(),
-    token: z.string(),
-  }), undefined, 'ping')
+  return apiCall<AuthResponse>(
+    'post',
+    '/auth/ping',
+    undefined,
+    authResponseSchema,
+    undefined,
+    'ping'
+  )
 }
 
 export default defineNuxtPlugin(() => {

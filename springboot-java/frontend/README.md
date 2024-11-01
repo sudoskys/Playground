@@ -1,3 +1,10 @@
+# Stack
+
+- https://www.shadcn-vue.com
+- https://www.unocss.dev
+- https://www.vee-validate.com
+- ui https://unsplash.com
+
 # Nuxt Minimal Starter
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
