@@ -48,26 +48,25 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(Long id, User userDetails) {
-        User user = getUserById(id);
-        
-        if (userDetails.getEmail() != null && !user.getEmail().equals(userDetails.getEmail())) {
-            if (userMapper.findByEmail(userDetails.getEmail()).isPresent()) {
-                throw new EmailAlreadyExistsException("新邮箱已被其他用户使用");
-            }
-            user.setEmail(userDetails.getEmail());
+    public User updateUser(Long id, User updateUser) {
+        User existingUser = getUserById(id);
+        if (existingUser == null) {
+            throw new RuntimeException("用户不存在");
         }
         
-        if (userDetails.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        // 更新基本信息
+        existingUser.setEmail(updateUser.getEmail());
+        existingUser.setRole(updateUser.getRole());
+        
+        // 如果提供了新密码，则更新密码
+        if (updateUser.getPassword() != null && !updateUser.getPassword().isEmpty()) {
+            // 使用 PasswordEncoder 加密新密码
+            String encodedPassword = passwordEncoder.encode(updateUser.getPassword());
+            existingUser.setPassword(encodedPassword);
         }
         
-        if (userDetails.getRole() != null) {
-            user.setRole(userDetails.getRole());
-        }
-        
-        userMapper.updateUser(user);
-        return user;
+        userMapper.updateUser(existingUser);
+        return existingUser;
     }
 
     @Transactional

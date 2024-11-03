@@ -17,6 +17,9 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+# 不提交静态文件
+src/main/resources/static
+
 ### IntelliJ IDEA ###
 .idea
 *.iws

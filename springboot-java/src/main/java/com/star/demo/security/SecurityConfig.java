@@ -36,11 +36,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                     // 添加 OPTIONS 请求的放行
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/api/**").authenticated()
+                    .requestMatchers("/api/**").permitAll()
                     .anyRequest().permitAll()
-            )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            );
+            //.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         
         return http.build();
     }

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -23,10 +24,10 @@ public class StatusController {
     @GetMapping("/status")
     public ResponseEntity<?> getStatus(HttpServletRequest request) {
         Map<String, String> response = new HashMap<>();
-        String token = jwtUtil.extractTokenFromCookies(request).orElse(null);
+        Optional<String> token = jwtUtil.extractToken(request);
 
-        if (token != null && jwtUtil.validateToken(token)) {
-            Long username = jwtUtil.extractUserId(token);
+        if (token.isPresent() && jwtUtil.validateToken(token.get())) {
+            Long username = jwtUtil.extractUserId(token.get());
             response.put("status", "valid");
             response.put("username", String.valueOf(username));
             logger.info("JWT 有效，用户：{}", username);

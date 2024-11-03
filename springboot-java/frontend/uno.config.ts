@@ -1,6 +1,5 @@
 import {
   defineConfig,
-  presetAttributify,
   presetIcons,
   presetTypography,
   presetUno,
@@ -15,6 +14,10 @@ export default defineConfig({
   presets: [
     presetUno(),
     presetAnimations(),  
+    presetIcons({
+      scale: 1.2,
+      cdn: 'https://esm.sh/',
+    }),
     presetTypography(),
     presetWebFonts({
       fonts: {

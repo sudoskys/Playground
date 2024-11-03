@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -43,18 +42,12 @@ public class JwtUtil {
                 .compact();
     }
 
-    public Optional<String> extractTokenFromCookies(HttpServletRequest request) {
-        if (request.getCookies() == null) {
-            return Optional.empty();
+    public Optional<String> extractToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return Optional.of(bearerToken.substring(7));
         }
-        return Optional.ofNullable(
-                request.getCookies())
-                .flatMap(cookies -> 
-                    java.util.Arrays.stream(cookies)
-                        .filter(cookie -> "token".equals(cookie.getName()))
-                        .findFirst()
-                        .map(Cookie::getValue)
-                );
+        return Optional.empty();
     }
 
     public Claims extractAllClaims(String token) {

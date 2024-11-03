@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -22,10 +23,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-        String token = jwtUtil.extractTokenFromCookies(request).orElse(null);
-        if (token != null && jwtUtil.validateToken(token)) {
+        Optional<String> token = jwtUtil.extractToken(request);
+        if (token.isPresent() && jwtUtil.validateToken(token.get())) {
             // Set authentication in the context
-            UsernamePasswordAuthenticationToken authentication = jwtUtil.getAuthentication(token);
+            UsernamePasswordAuthenticationToken authentication = jwtUtil.getAuthentication(token.get());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);

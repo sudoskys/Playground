@@ -68,24 +68,39 @@ public class AuthController {
 
     @GetMapping("/user")
     public ApiResponse<UserResponse> getCurrentUser(
-            @RequestHeader("Authorization") String token) {
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        log.info("/user 收到的 Authorization header: {}", token);
+        if (token == null || token.isEmpty()) {
+            log.warn("未提供认证信息");
+            return ApiResponse.error("未提供认证信息");
+        }
         String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
         User user = userService.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("用户不存在"));
         
         return ApiResponse.success(UserResponse.fromUser(user));
     }
-    /**
-     * 续签 Token
-     * @param token
-     * @return
-     */
+
     @PostMapping("/ping")
     public ApiResponse<AuthResponse> ping(
-            @RequestHeader("Authorization") String token) {
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        log.info("/ping 收到的 Authorization header: {}", token);
+        
+        if (token == null || token.isEmpty()) {
+            log.warn("未提供认证信息");
+            return ApiResponse.error("未提供认证信息");
+        }
+        
+        if (!token.startsWith("Bearer ")) {
+            log.warn("认证格式错误，应为 Bearer token");
+            return ApiResponse.error("认证格式错误，应为 Bearer token");
+        }
+        
         String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
+        log.info("/ping 提取的邮箱: {}", email);
+        
         User user = userService.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("用户不存在"));
+            .orElseThrow(() -> new RuntimeException("用户不存在")); 
         
         String newToken = jwtUtil.generateToken(
             email, 

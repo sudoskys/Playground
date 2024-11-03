@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,14 +24,18 @@ public class UserController {
     private static final List<String> ADMIN_ROLES = List.of("ADMIN");
 
     @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
     private UserService userService;
 
     private boolean isAdmin(HttpServletRequest request) {
-        String token = jwtUtil.extractTokenFromCookies(request).orElse(null);
+        String token = jwtUtil.extractToken(request).orElse(null);
         if (token == null) {
+            System.out.println("token is null");
             return false;
         }
         String role = jwtUtil.extractRole(token);
@@ -73,18 +78,33 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody User user, HttpServletRequest request) {
-        if (!isAdmin(request)) {
-            logger.warn("非管理员尝试更新用户，用户ID：{}", id);
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "访问被拒绝"));
-        }
+    @RequireRole("ADMIN")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody Map<String, String> updates) {
         try {
-            userService.updateUser(id, user);
-            logger.info("管理员成功更新用户，用户ID：{}", id);
+            User existingUser = userService.getUserById(id);
+            
+            // 更新邮箱
+            if (updates.containsKey("email")) {
+                existingUser.setEmail(updates.get("email"));
+            }
+            
+            // 更新角色
+            if (updates.containsKey("role")) {
+                existingUser.setRole(User.Role.valueOf(updates.get("role")));
+            }
+            
+            // 只有当提供了新密码时才更新密码
+            if (updates.containsKey("password") && updates.get("password") != null) {
+                String newPassword = updates.get("password");
+                existingUser.setPassword(passwordEncoder.encode(newPassword));
+            }
+            
+            userService.updateUser(id, existingUser);
             return ResponseEntity.ok(Map.of("message", "用户更新成功"));
         } catch (Exception e) {
             logger.error("更新用户过程中发生错误，用户ID：{}", id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "更新用户时发生错误"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "更新用户时发生错误"));
         }
     }
 

@@ -3,6 +3,7 @@ import { useRuntimeConfig } from '#app'
 
 import axios from 'axios'
 import { z } from 'zod'
+import useSWRV from 'swrv'
 // Error handling
 export class ApiError extends Error {
   constructor(
@@ -158,6 +159,109 @@ export function ping() {
     authResponseSchema,
     undefined,
     'ping'
+  )
+}
+
+// 定义用户相关的 Schema
+const userSchema = z.object({
+  id: z.number(),
+  email: z.string(),
+  role: z.string(),
+})
+
+type MessageResponse = {
+  message: string
+}
+
+const userListSchema = z.array(userSchema)
+
+type User = z.infer<typeof userSchema>
+// 获取所有用户
+export function getAllUsers() {
+  return apiCall<User[]>(
+    'get',
+    '/users',
+    undefined,
+    userListSchema,
+    undefined,
+    'getAllUsers'
+  )
+}
+
+// 使用 SWRV 的用户列表 hook
+export function useUsers() {
+  const { data, error, isValidating, mutate } = useSWRV<User[]>(
+    '/users',
+    () => api.get('/users').then(res => res.data),
+    {
+      // SWRV 配置选项
+      refreshInterval: 0, // 轮询间隔，0 表示禁用
+      dedupingInterval: 2000, // 相同请求的去重时间间隔
+      ttl: 0, // 缓存生存时间，0 表示永久
+      shouldRetryOnError: true, // 错误时是否重试
+      errorRetryInterval: 5000, // 错误重试间隔
+      errorRetryCount: 2, // 最大错误重试次数
+      revalidateOnFocus: false, // 窗口获得焦点时重新验证
+      revalidateDebounce: 0, // 重新验证的防抖时间
+    }
+  )
+
+  return {
+    users: data,
+    isLoading: isValidating,
+    isError: error,
+    mutate,
+  }
+}
+
+// 获取单个用户
+export function getUserById(id: number) {
+  return apiCall<User>(
+    'get',
+    `/users/${id}`,
+    undefined,
+    userSchema,
+    undefined,
+    'getUserById'
+  )
+}
+
+// 创建用户
+export function createUser(email: string, password: string) {
+  if (!email || !password) {
+    throw new ApiError(400, '邮箱和密码不能为空', 'validation_error', 'createUser')
+  }
+  return apiCall<MessageResponse>(
+    'post',
+    '/users',
+    { email, password },
+    undefined,
+    undefined,
+    'createUser'
+  )
+}
+
+// 更新用户
+export function updateUser(id: number, userData: Partial<User>) {
+  return apiCall<MessageResponse>(
+    'put',
+    `/users/${id}`,
+    userData,
+    undefined,
+    undefined,
+    'updateUser'
+  )
+}
+
+// 删除用户
+export function deleteUser(id: number) {
+  return apiCall<MessageResponse>(
+    'delete',
+    `/users/${id}`,
+    undefined,
+    undefined,
+    undefined,
+    'deleteUser'
   )
 }
 

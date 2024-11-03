@@ -6,8 +6,27 @@ import { useUserStore } from '~/stores/user'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { LogOut } from 'lucide-vue-next'
+import { ref, computed } from 'vue'
+import { useToast } from '@/components/ui/toast'
+import { 
+  createUser, 
+  updateUser, 
+  deleteUser 
+} from '~/lib/api'
+
+import { useUsers } from '~/lib/api'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+  SelectLabel,
+} from '@/components/ui/select'
 
 const userStore = useUserStore()
+const { toast } = useToast()
 const router = useRouter()
 const { user } = storeToRefs(userStore)
 
@@ -43,6 +62,107 @@ const handleLogout = async () => {
 const welcomeMessage = computed(() => {
   return `欢迎回来${user.value?.email ? ', ' + user.value.email : ''}`
 })
+
+// 用户管理相关
+const { users: usersData, isLoading, mutate: mutateUsers } = useUsers()
+const editingId = ref<number | null>(null)
+const editForm = ref({
+  email: '',
+  password: '',
+  role: '',
+})
+// 开始编辑
+const startEdit = (user: { id: number, email: string, role: string }) => {
+  editingId.value = user.id
+  editForm.value = {
+    email: user.email,
+    password: '',
+    role: user.role,
+  }
+}
+
+// 取消编辑
+const cancelEdit = () => {
+  editingId.value = null
+  editForm.value = {
+    email: '',
+    password: '',
+    role: '',
+  }
+}
+
+// 保存编辑
+const saveEdit = async (id: number) => {
+  try {
+    const updateData: any = {
+      email: editForm.value.email,
+      role: editForm.value.role,
+    }
+    
+    // 只有当用户输入了新密码时，才包含密码字段
+    if (editForm.value.password && editForm.value.password.trim() !== '') {
+      updateData.password = editForm.value.password
+    }
+    await updateUser(id, updateData)
+    await mutateUsers()
+    editingId.value = null
+    toast({
+      title: '更新成功',
+      description: '用户信息已成功更新'
+    })
+  } catch (error) {
+    toast({
+      title: '更新失败',
+      description: '用户信息更新失败'
+    })
+    console.error(error)
+  }
+}
+
+// 删除用户
+const handleDelete = async (id: number) => {
+  try {
+    await deleteUser(id)
+    await mutateUsers() // 刷新数据
+    toast({
+      title: '删除成功',
+      description: '用户已成功删除'
+    })
+  } catch (error) {
+    toast({
+      title: '删除失败',
+      description: '用户删除失败'
+    })
+    console.error(error)
+  }
+}
+
+// 新建用户相关
+const showCreateForm = ref(false)
+const newUserForm = ref({
+  email: '',
+  password: '',
+  role: 'USER'
+})
+
+const handleCreate = async () => {
+  try {
+    await createUser(newUserForm.value.email, newUserForm.value.password)
+    await mutateUsers() // 刷新数据
+    showCreateForm.value = false
+    newUserForm.value = { email: '', password: '', role: 'USER' }
+    toast({
+      title: '创建成功',
+      description: '用户已成功创建'
+    })
+  } catch (error) {
+    toast({
+      title: '创建失败',
+      description: '用户创建失败'
+    })
+    console.error(error)
+  }
+}
 </script>
 
 <template>
@@ -89,49 +209,179 @@ const welcomeMessage = computed(() => {
         </Card>
       </div>
 
+      <div v-if="!usersData">
+        <div class="flex justify-center py-4">
+          <Spinner class="h-6 w-6" />
+        </div>
+      </div>
+
       <!-- 管理员用户列表 -->
       <div v-if="isAdmin" class="mt-6">
         <Card>
-          <CardHeader>
-            <CardTitle>最近注册用户</CardTitle>
-            <CardDescription>
-              查看最近注册的用户列表
-            </CardDescription>
+          <CardHeader class="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>用户管理</CardTitle>
+              <CardDescription>管理系统用户</CardDescription>
+            </div>
+            <Button @click="showCreateForm = true">新建用户</Button>
           </CardHeader>
           <CardContent>
-            <Table>
+            <!-- 加载状态 -->
+            <div v-if="isLoading" class="flex justify-center py-4">
+              <Spinner class="h-6 w-6" />
+            </div>
+            <!-- 用户列表 -->
+            <Table v-else>
               <TableHeader>
                 <TableRow>
                   <TableHead>ID</TableHead>
                   <TableHead>邮箱</TableHead>
-                  <TableHead>注册时间</TableHead>
                   <TableHead>角色</TableHead>
                   <TableHead>操作</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow v-for="user in recentUsers" :key="user.id">
+                <!-- 添加调试信息 -->
+                <template v-if="usersData">
+                  <pre>{{ JSON.stringify(usersData, null, 2) }}</pre>
+                </template>
+                
+                <TableRow v-for="user in usersData" :key="user.id">
                   <TableCell>{{ user.id }}</TableCell>
-                  <TableCell>{{ user.email }}</TableCell>
-                  <TableCell>{{ user.createdAt }}</TableCell>
-                  <TableCell>{{ user.role }}</TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm">
-                      查看详情
-                    </Button>
+                    <div v-if="editingId === user.id">
+                      <Input 
+                        v-model="editForm.email" 
+                        placeholder="邮箱" 
+                        class="mb-2"
+                      />
+                      <Input 
+                        v-model="editForm.password" 
+                        type="password" 
+                        placeholder="新密码（可选）" 
+                        class="mb-2"
+                      />
+                    </div>
+                    <span v-else>{{ user.email }}</span>
+                  </TableCell>
+                  <TableCell>
+                    <div v-if="editingId === user.id">
+                      <Select v-model="editForm.role">
+                        <SelectTrigger class="w-[180px]">
+                          <SelectValue placeholder="选择角色" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>角色</SelectLabel>
+                            <SelectItem value="USER">用户</SelectItem>
+                            <SelectItem value="ADMIN">管理员</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <span v-else>{{ user.role }}</span>
+                  </TableCell>
+                  <TableCell>
+                    <div class="flex space-x-2">
+                      <template v-if="editingId === user.id">
+                        <Button 
+                          variant="default" 
+                          size="sm"
+                          @click="saveEdit(user.id)"
+                        >
+                          保存
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          @click="cancelEdit"
+                        >
+                          取消
+                        </Button>
+                      </template>
+                      <template v-else>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          @click="startEdit(user)"
+                        >
+                          编辑
+                        </Button>
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          @click="handleDelete(user.id)"
+                        >
+                          删除
+                        </Button>
+                      </template>
+                    </div>
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </CardContent>
         </Card>
+
+        <!-- 新建用户对话框 -->
+        <Dialog :open="showCreateForm" @update:open="showCreateForm = $event">
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>新建用户</DialogTitle>
+              <DialogDescription>
+                创建新的系统用户
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div class="space-y-4">
+              <div class="space-y-2">
+                <Label>邮箱</Label>
+                <Input v-model="newUserForm.email" placeholder="请输入邮箱" />
+              </div>
+              
+              <div class="space-y-2">
+                <Label>密码</Label>
+                <Input 
+                  v-model="newUserForm.password" 
+                  type="password" 
+                  placeholder="请输入密码" 
+                />
+              </div>
+              
+              <div class="space-y-2">
+                <Label>角色</Label>
+                <Select v-model="newUserForm.role">
+                  <SelectTrigger class="w-[180px]">
+                    <SelectValue placeholder="选择角色" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>角色</SelectLabel>
+                      <SelectItem value="USER">用户</SelectItem>
+                      <SelectItem value="ADMIN">管理员</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" @click="showCreateForm = false">
+                取消
+              </Button>
+              <Button @click="handleCreate">
+                创建
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <!-- 普通用户界面 -->
       <div v-else class="mt-6">
         <Card>
           <CardHeader>
-            <CardTitle>我的账户信息</CardTitle>
+            <CardTitle>您是普通用户</CardTitle>
           </CardHeader>
           <CardContent>
             <div class="space-y-4">
@@ -145,7 +395,6 @@ const welcomeMessage = computed(() => {
                   <p class="text-muted-foreground">{{ user?.role }}</p>
                 </div>
               </div>
-              
               <div class="pt-4">
                 <Button>修改密码</Button>
               </div>
