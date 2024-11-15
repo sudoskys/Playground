@@ -20,12 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-    @Autowired
-    private UserService userService;
+    private final UserMapper userMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserMapper userMapper, BCryptPasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
@@ -40,18 +36,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = User.builder().email(email).password(passwordEncoder.encode(password)).role(User.Role.USER).build();
         userMapper.insert(user);
         return user;
-    }
-
-    public List<User> getAllUsers() {
-        return userMapper.selectList(null);
-    }
-
-    public Optional<User> findByEmail(String email) {
-        return userMapper.findByEmail(email);
-    }
-
-    public User getUserById(Long id) {
-        return Optional.ofNullable(userMapper.selectById(id)).orElseThrow(() -> new UserNotFoundException("用户不存在，ID: " + id));
     }
 
     @Transactional
@@ -76,27 +60,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return existingUser;
     }
 
-    @Transactional
-    public void deleteUser(Long id) {
-        if (userMapper.deleteById(id) == 0) {
-            throw new UserNotFoundException("用户不存在，ID: " + id);
-        }
+    public User getUserById(Long id) {
+        return Optional.ofNullable(userMapper.selectById(id)).orElseThrow(() -> new UserNotFoundException("用户不存在，ID: " + id));
     }
 
-    @Transactional
-    public User changeUserRole(Long id, User.Role newRole) {
-        User user = getUserById(id);
-        user.setRole(newRole);
-        userMapper.updateById(user);
-        return user;
-    }
-
-    public User authenticateUser(String email, String password) {
-        User user = userMapper.findByEmail(email).orElseThrow(() -> new UserNotFoundException("用户不存在，邮箱: " + email));
-
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new InvalidPasswordException("密码不正确");
-        }
-        return user;
-    }
 }
