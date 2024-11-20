@@ -6,14 +6,14 @@
 
 - 别人写过的直接放链接，我就不复制了
 
-## 打榜 
+## 文
 
 - [x] https://react.dev/
 - [x] https://vuejs.org
 - [ ] https://nuxt.com/
-- [ ] https://tailwindcss.com/
+- [x] https://tailwindcss.com/
 
-## 查
+## 速查
 
 https://wangchujiang.com/reference/index.html
 
@@ -21,7 +21,14 @@ https://learnxinyminutes.com/
 
 https://devhints.io/
 
-### 一些
+### 览
+
+- https://space.bilibili.com/1346756964
+- Vuejs https://www.bilibili.com/video/BV1nV411Q7RX/
+- https://space.bilibili.com/482867012
+- https://javabetter.cn/
+
+### Codeserver
 
 [CodeServer-GPG签名问题](https://stackoverflow.com/questions/52808365/git-error-gpg-failed-to-sign-the-data-on-linux)
 
