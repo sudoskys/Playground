@@ -5,11 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Data
 @Builder
-@TableName("`products`")
+@TableName("products")
 public class Product {
     @NotBlank(message = "产品ID不能为空")
     private Long id;
@@ -19,7 +20,7 @@ public class Product {
     private Long uploaderId;
 
     @Builder.Default
-    private LocalDateTime uploadTime = LocalDateTime.now();
+    private OffsetDateTime uploadTime = OffsetDateTime.now(ZoneOffset.UTC);
     // 默认上传时间为当前时间
 
     private Double price;

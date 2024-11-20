@@ -18,8 +18,11 @@ import java.util.Optional;
 public class StatusController {
     private static final Logger logger = LoggerFactory.getLogger(StatusController.class);
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
+
+    public StatusController(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @GetMapping("/status")
     public ResponseEntity<?> getStatus(HttpServletRequest request) {

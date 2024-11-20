@@ -1,10 +1,11 @@
 package com.star.demo.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.star.demo.model.Product;
+import com.star.demo.service.ProductRepository;
 import com.star.demo.service.ProductService;
 import com.star.demo.common.ApiResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
@@ -13,10 +14,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final ProductRepository productRepository;
 
     @PostMapping
     public ApiResponse<Product> createProduct(@RequestBody Product product) {
-        boolean success = productService.save(product);
+        boolean success = productRepository.save(product);
         if (!success) {
             return ApiResponse.error("创建商品失败");
         }
@@ -25,7 +27,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ApiResponse<Product> getProductById(@PathVariable Long id) {
-        Product product = productService.getById(id);
+        Product product = productRepository.getById(id);
         if (product == null) {
             return ApiResponse.error("商品不存在");
         }
@@ -33,14 +35,14 @@ public class ProductController {
     }
 
     @GetMapping
-    public ApiResponse<Page<Product>> getAllProducts(Pageable pageable) {
-        Page<Product> products = productService.getAll(pageable);
+    public ApiResponse<IPage<Product>> getAllProducts(IPage<Product> pageable) {
+        IPage<Product> products = productRepository.selectAll(pageable);
         return ApiResponse.success(products);
     }
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteProductById(@PathVariable Long id) {
-        boolean success = productService.deleteById(id);
+        boolean success = productRepository.removeById(id);
         if (!success) {
             return ApiResponse.error("删除商品失败");
         }

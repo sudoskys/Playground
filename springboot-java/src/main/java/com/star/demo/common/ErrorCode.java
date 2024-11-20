@@ -1,5 +1,8 @@
 package com.star.demo.common;
 
+import lombok.Getter;
+
+@Getter
 public enum ErrorCode {
     SUCCESS("200", "成功"),
     PARAM_ERROR("400", "参数错误"),
@@ -18,11 +21,4 @@ public enum ErrorCode {
         this.message = message;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }

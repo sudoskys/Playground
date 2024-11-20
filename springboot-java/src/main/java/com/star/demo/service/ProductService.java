@@ -1,8 +1,16 @@
 package com.star.demo.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.star.demo.model.User;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-public interface ProductService extends IService<User> {
+@Slf4j
+@Service
+public class ProductService {
+
+    @Resource
+    private ProductRepository productRepository;
 
 }
+
+

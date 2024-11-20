@@ -1,5 +1,6 @@
 package com.star.demo.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.star.demo.annotation.RequireRole;
 import com.star.demo.model.User;
 import com.star.demo.security.JwtUtil;
@@ -8,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,25 +21,12 @@ import java.util.Map;
 @RequestMapping("/api/users")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    private static final List<String> ADMIN_ROLES = List.of("ADMIN");
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final UserService userService;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private UserService userService;
-
-    private boolean isAdmin(HttpServletRequest request) {
-        String token = jwtUtil.extractToken(request).orElse(null);
-        if (token == null) {
-            System.out.println("token is null");
-            return false;
-        }
-        String role = jwtUtil.extractRole(token);
-        return ADMIN_ROLES.contains(role);
+    public UserController(BCryptPasswordEncoder passwordEncoder, JwtUtil jwtUtil, UserService userService) {
+        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -62,65 +49,32 @@ public class UserController {
     }
 
     @PostMapping
+    @RequireRole("ADMIN")
     public ResponseEntity<?> createUser(@Valid @RequestBody User user, HttpServletRequest request) {
-        if (!isAdmin(request)) {
-            logger.warn("非管理员尝试创建用户");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "访问被拒绝"));
+        boolean success = userService.saveUser(user);
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "用户创建失败"));
         }
-        try {
-            userService.registerUser(user.getEmail(), user.getPassword());
-            logger.info("管理员成功创建用户：{}", user.getEmail());
-            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "用户创建成功"));
-        } catch (Exception e) {
-            logger.error("创建用户过程中发生错误", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "创建用户时发生错误"));
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "用户创建成功"));
     }
 
     @PutMapping("/{id}")
     @RequireRole("ADMIN")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody Map<String, String> updates) {
-        try {
-            User existingUser = userService.getUserById(id);
-            
-            // 更新邮箱
-            if (updates.containsKey("email")) {
-                existingUser.setEmail(updates.get("email"));
-            }
-            
-            // 更新角色
-            if (updates.containsKey("role")) {
-                existingUser.setRole(User.Role.valueOf(updates.get("role")));
-            }
-            
-            // 只有当提供了新密码时才更新密码
-            if (updates.containsKey("password") && updates.get("password") != null) {
-                String newPassword = updates.get("password");
-                existingUser.setPassword(passwordEncoder.encode(newPassword));
-            }
-            
-            userService.updateUser(id, existingUser);
-            return ResponseEntity.ok(Map.of("message", "用户更新成功"));
-        } catch (Exception e) {
-            logger.error("更新用户过程中发生错误，用户ID：{}", id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", "更新用户时发生错误"));
+        boolean success = userService.updateUser(User.builder().id(id).email(updates.get("email")).role(User.Role.valueOf(updates.get("role"))).password(passwordEncoder.encode(updates.get("password"))).build(), new QueryWrapper<User>().eq("id", id));
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "用户更新失败"));
         }
+        return ResponseEntity.ok(Map.of("message", "用户更新成功"));
     }
 
     @DeleteMapping("/{id}")
+    @RequireRole("ADMIN")
     public ResponseEntity<?> deleteUser(@PathVariable Long id, HttpServletRequest request) {
-        if (!isAdmin(request)) {
-            logger.warn("非管理员尝试删除用户，用户ID：{}", id);
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "访问被拒绝"));
+        boolean success = userService.deleteUserById(id);
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "用户删除失败"));
         }
-        try {
-            userService.deleteUser(id);
-            logger.info("管理员成功删除用户，用户ID：{}", id);
-            return ResponseEntity.ok(Map.of("message", "用户删除成功"));
-        } catch (Exception e) {
-            logger.error("删除用户过程中发生错误，用户ID：{}", id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "删除用户时发生错误"));
-        }
+        return ResponseEntity.ok(Map.of("message", "用户删除成功"));
     }
 }
