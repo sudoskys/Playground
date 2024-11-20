@@ -1,0 +1,3 @@
+[submodule "spring-nuxt-template"]
+	path = spring-nuxt-template
+	url = git@github.com:sudoskys/springboot3-mybatisplus-template.git
