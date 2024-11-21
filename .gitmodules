@@ -1,3 +1,6 @@
 [submodule "springboot3-nuxt3-template"]
 	path = springboot3-nuxt3-template
 	url = git@github.com:sudoskys/springboot3-nuxt3-template.git
+[submodule "vue3-hono-toy"]
+	path = vue3-hono-toy
+	url = git@github.com:sudoskys/vue3-hono-toy.git
