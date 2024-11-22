@@ -14,10 +14,8 @@ import AutoSizer from "react-virtualized-auto-sizer";
 
 // 对于 AudioCard，我们将其包装到 React.memo 中，以免不必要的重绘
 const MemoizedAudioCard = React.memo(AudioCard);
-
 const lockOpen = <LockOpen/>;
 const lock = <Lock style={{color: 'green'}}/>;
-
 // 设置常量控制是否需要鉴权
 const IS_NEED_AUTH = false; // 如果不需要鉴权，设置为 false
 
@@ -280,9 +278,7 @@ function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boo
             </div>
         );
     };
-
-    const margin_top = is_mob ? 2 : 0; // Adjust the margin after title
-
+    const margin_top = is_mob ? 2 : 0; // 调整移动端
     return (
         result.length > 0 && (
             // The Card component now fills its parent element

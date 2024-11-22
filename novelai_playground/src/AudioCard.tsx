@@ -42,16 +42,18 @@ export const AudioCard: React.FC<AudioCardProps> = ({title, subTitle, audioUrl})
     }
 
     return (
-        <Card sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: 1,
-            border: 1,
-            borderColor: 'divider',
-            marginBottom: 2
-        }}>
+        <Card
+            variant={"outlined"}
+            sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: 1,
+                border: 1,
+                borderColor: 'divider',
+                marginBottom: 2
+            }}>
             <Box sx={{flex: '1 1', pr: 2, width: "80%"}}>
                 <CardContent sx={{padding: 1}}>
                     <Typography
