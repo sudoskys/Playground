@@ -2,10 +2,20 @@
 
 *NovelAI TTS Service 单页应用前端开发示例*
 
+- React Scan
+
+https://github.com/aidenybai/react-scan
+
+```html
+
+<script src="https://unpkg.com/react-scan/dist/auto.global.js"></script>
+```
+
 ## Points
 
 - [ ] Oauth
 - [x] Auth
+- [x] React Window + AutoSizer
 - [x] LocalStorage
 - [x] Animation
 - [x] Fetch API

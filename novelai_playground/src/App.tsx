@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import ProTip from './ProTip';
-import {Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, Snackbar} from '@mui/material';
+import {Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, ListItem, Snackbar} from '@mui/material';
 import {uniqueNamesGenerator, adjectives, colors, animals} from 'unique-names-generator';
 import {Box, Link, Typography, Container, IconButton} from "@mui/material";
 import {Button, Card, CardContent, TextField} from "@mui/material";
@@ -8,7 +8,7 @@ import {useMediaQuery} from '@mui/material';
 import {Grid} from '@mui/material';
 import {Casino, LockOpen, Lock} from '@mui/icons-material';
 import {AudioCard, AudioCardProps} from './AudioCard.tsx';
-import {FixedSizeList} from "react-window";
+import {FixedSizeList, ListChildComponentProps} from "react-window";
 import {useSpring, animated} from 'react-spring';
 import AutoSizer from "react-virtualized-auto-sizer";
 
@@ -265,26 +265,36 @@ function MainPage({setResult}: { setResult: React.Dispatch<React.SetStateAction<
 }
 
 function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boolean }) {
-    const Row = ({index, style, data}: { index: number, style: NonNullable<unknown>, data: AudioCardProps[] }) => {
-        // Note: We invert the order to display the newest items at the top
-        const audioData = data[data.length - index - 1];
+
+    function renderRow(props: ListChildComponentProps) {
+        const {index, style} = props;
+        const audioData = result[result.length - index - 1];
         return (
-            <div style={{...style, padding: '5px', width: "100%"}} key={audioData.audioUrl}>
+            <ListItem
+                style={style}
+                key={index}
+                component="div"
+                disablePadding
+                className={
+                    "hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition-colors duration-200 rounded-md"
+                }
+            >
                 <MemoizedAudioCard
                     title={audioData.title}
                     subTitle={audioData.subTitle}
                     audioUrl={audioData.audioUrl}
                 />
-            </div>
+            </ListItem>
         );
-    };
+    }
+
     const margin_top = is_mob ? 2 : 0; // 调整移动端
     return (
         result.length > 0 && (
             // The Card component now fills its parent element
             <Card variant="outlined" sx={{mt: margin_top, height: '500px', width: '100%'}} style={{flexGrow: 1}}>
-                <CardContent sx={{p: 3, height: '100%', width: "100%"}}>
-                    <Typography variant="h5" component="h5" sx={{mb: 1}}>
+                <CardContent sx={{px: 4, height: '100%', width: "100%"}}>
+                    <Typography variant="h5" component="h5" sx={{mb: 0}}>
                         Result
                     </Typography>
                     <AutoSizer>
@@ -293,10 +303,16 @@ function ResultSection({result, is_mob}: { result: AudioCardProps[], is_mob: boo
                                 height={height}
                                 width={width}
                                 itemCount={result.length}
-                                itemSize={115}
+                                itemSize={100}
                                 itemData={result}
+                                style={
+                                    {
+                                        overflowX: 'hidden',
+                                        overflowY: 'auto',
+                                    }
+                                }
                             >
-                                {Row}
+                                {renderRow}
                             </FixedSizeList>
                         )}
                     </AutoSizer>
