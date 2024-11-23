@@ -1,0 +1,18 @@
+[project]
+name = "python-playground"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "-", email = "-"},
+]
+dependencies = [
+    "selenium>=4.26.1",
+    "pytest>=8.3.3",
+]
+requires-python = ">3.9"
+readme = "README.md"
+license = {text = "-"}
+
+
+[tool.pdm]
+distribution = false
