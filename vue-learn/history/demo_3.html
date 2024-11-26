@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        {{msg}}
+
+        <h2>{{web.title}}</h2>
+        <h2>{{web.url}}</h2>
+        <h2>{{number}}</h2><br/>
+        <button @click="edit">修改</button><hr/>
+        回车 <input type="text" @keyup.enter="add(40,60)">
+    </div>
+    <script type="module">
+        import { createApp, reactive, ref } from './vue.esm-browser.js'
+
+        createApp({
+            /// 响应方法
+            setup() {
+                const number = ref([1, 2, 3])
+                const web = reactive(
+                    {
+                        title: "标题",
+                        url: "url here"
+                    }
+                )
+                const edit = () => {
+                    web.url = "aaaaa"
+                }
+
+                const add=(a,b)=>{
+                    web.title=a+b
+                }
+                return {
+                    msg: "success",
+                    number,
+                    web,
+                    edit,
+                    add,
+                }
+            }
+        }).mount("#app")
+    </script>
+</body>
+
+</html>
