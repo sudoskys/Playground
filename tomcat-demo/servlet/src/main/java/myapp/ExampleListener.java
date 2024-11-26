@@ -9,11 +9,11 @@ public class ExampleListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        System.out.println("Application started");
+        System.out.println("myapp.Application started");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        System.out.println("Application stopped");
+        System.out.println("myapp.Application stopped");
     }
 }
