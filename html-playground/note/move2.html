@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Image Slider</title>
+    <style>
+        .banner {
+            position: relative;
+            width: 600px;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .banner img {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .banner img.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="banner" id="banner">
+    <a href="#"><img src="image/tp1.jpg" alt="Image 1" class="active"></a>
+    <a href="#"><img src="image/tp2.jpg" alt="Image 2"></a>
+    <a href="#"><img src="image/tp3.jpg" alt="Image 3"></a>
+    <a href="#"><img src="image/tp4.jpg" alt="Image 4"></a>
+    <a href="#"><img src="image/tp5.jpg" alt="Image 5"></a>
+    <a href="#"><img src="image/tp6.jpg" alt="Image 6"></a>
+</div>
+
+<script>
+    var currentIndex = 0;
+    var images = document.querySelectorAll('.banner img');
+    var totalImages = images.length;
+    var interval;
+
+    function showNextImage() {
+        images[currentIndex].classList.remove('active');
+        currentIndex = (currentIndex + 1) % totalImages;
+        images[currentIndex].classList.add('active');
+    }
+
+    function startSlider() {
+        interval = setInterval(showNextImage, 1000);
+    }
+
+    function stopSlider() {
+        clearInterval(interval);
+    }
+
+    document.getElementById('banner').addEventListener('mouseover', stopSlider);
+    document.getElementById('banner').addEventListener('mouseout', startSlider);
+
+    startSlider();
+</script>
+</body>
+</html>

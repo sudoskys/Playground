@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Selector</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  .image-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 5px solid lime;
+    padding: 10px;
+    text-align: center;
+  }
+  .image {
+    width: 100%;
+    height: auto;
+    display: none;
+  }
+  .image.active {
+    display: block;
+  }
+  .buttons {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+  }
+  .button {
+    width: 20px;
+    height: 20px;
+    margin: 2px;
+    background-color: red;
+    border: none;
+    cursor: pointer;
+  }
+  .button.active {
+    background-color: gray;
+  }
+</style>
+</head>
+<body>
+
+<p>实现如下效果，在代码区写出实现步骤，并提交运行的事件。</p>
+<div class="image-container">
+  <img src="image1.jpg" alt="Image 1" class="image active">
+  <img src="image2.jpg" alt="Image 2" class="image">
+  <img src="image3.jpg" alt="Image 3" class="image">
+  <img src="image4.jpg" alt="Image 4" class="image">
+  <div class="buttons">
+    <button class="button active" onclick="showImage(0)"></button>
+    <button class="button" onclick="showImage(1)"></button>
+    <button class="button" onclick="showImage(2)"></button>
+    <button class="button" onclick="showImage(3)"></button>
+  </div>
+</div>
+
+<script>
+  function showImage(index) {
+    const images = document.querySelectorAll('.image');
+    const buttons = document.querySelectorAll('.button');
+
+    images.forEach((image, i) => {
+      if (i === index) {
+        image.classList.add('active');
+      } else {
+        image.classList.remove('active');
+      }
+    });
+
+    buttons.forEach((button, i) => {
+      if (i === index) {
+        button.classList.add('active');
+      } else {
+        button.classList.remove('active');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
