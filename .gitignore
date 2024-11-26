@@ -130,12 +130,15 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .vscode
+
+# C build
 /**/output
 /**/output/*
 /**/**/output
 /**/**/Out/
 /**/**/output/**
 
+# node
 /**/**/*.zip
 react_playground/.next/*
 react_playground/node_modules/*
@@ -143,10 +146,18 @@ react_playground/bun.lockb
 ts-train/node_modules/*
 **/node_modules
 
+# Java
 java-playground/in-train/a.txt
 java-playground/in-train/newfile.txt
 java-playground/in-train/RandomAcc_copy.java
 java-playground/in-class/gradle/wrapper/
 java-playground/in-train/gradle/wrapper/
+
+# ignore
 material-ui-vite-ts
 2411-app/packages/server/group.db
+nuxtjs-shadcn-dashboard/
+
+reactjs-playground/.next/
+
+tomcat-demo/servlet/src/main/webapp/
